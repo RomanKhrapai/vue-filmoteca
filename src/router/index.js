@@ -11,54 +11,56 @@ import User from "../components/UserPage.vue";
 
 const routes = [
     {
-        path: "/",
+        path: "/hw_vue_5",
         name: "home",
         component: Home,
         meta: { id: 1 },
-    },
-    {
-        path: "/film/:id",
-        name: "filmById",
-        component: OneFilm,
-        props: (route) => ({ id: route.params.id }),
-        meta: { id: 1 },
-    },
-    {
-        path: "/films",
-        component: Films,
-        meta: { id: 2 },
         children: [
             {
-                path: "",
-                component: PopularFilms,
-                alias: "",
+                path: "film/:id",
+                name: "filmById",
+                component: OneFilm,
+                props: (route) => ({ id: route.params.id }),
+                meta: { id: 1 },
             },
             {
-                path: "serials",
-                component: PopularSerials,
+                path: "films",
+                component: Films,
+                meta: { id: 2 },
+                children: [
+                    {
+                        path: "",
+                        component: PopularFilms,
+                        alias: "",
+                    },
+                    {
+                        path: "serials",
+                        component: PopularSerials,
+                    },
+                    {
+                        path: "persons",
+                        component: Pepsons,
+                    },
+                ],
             },
             {
-                path: "persons",
-                component: Pepsons,
+                path: "user",
+                component: User,
+                meta: { auth: "user", id: 3 },
+            },
+            {
+                path: "admin",
+                component: Admin,
+                meta: { auth: "admin", id: 4 },
+            },
+            {
+                path: "not-found",
+                alias: ":pathMatch(.*)*",
+                name: "NotFound",
+                component: NotFound,
+                meta: { id: null },
             },
         ],
-    },
-    {
-        path: "/user",
-        component: User,
-        meta: { auth: "user", id: 3 },
-    },
-    {
-        path: "/admin",
-        component: Admin,
-        meta: { auth: "admin", id: 4 },
-    },
-    {
-        path: "/not-found",
-        alias: "/:pathMatch(.*)*",
-        name: "NotFound",
-        component: NotFound,
-        meta: { id: null },
     },
 ];
 
