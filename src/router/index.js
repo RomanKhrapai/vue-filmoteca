@@ -11,7 +11,7 @@ import User from "../components/UserPage.vue";
 
 const routes = [
     {
-        path: "/hw_vue_5",
+        path: "/hw_vue_5/",
         name: "home",
         component: Home,
         meta: { id: 1 },
