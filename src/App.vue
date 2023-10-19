@@ -6,7 +6,7 @@
         <v-row>
           <v-col cols="8">
             <v-tabs v-model="tab" color="deep-purple-accent-4" align-tabs="start">
-              <router-link to="/">
+              <router-link to="/hw_vue_5/">
                 <v-tab :value="1" size="x-large" hide-slider variant="text">
                   <span class="logo">
                     <v-icon size="x-large" :icon="'mdi-video-vintage'"></v-icon>
@@ -14,13 +14,13 @@
                   </span>
                 </v-tab>
               </router-link>
-              <router-link to="/films">
+              <router-link to="/hw_vue_5/films">
                 <v-tab :value="2"> фільми</v-tab>
               </router-link>
-              <router-link v-if="status === 'user'" to="/user">
+              <router-link v-if="status === 'user'" to="/hw_vue_5/user">
                 <v-tab :value="3">user</v-tab>
               </router-link>
-              <router-link v-if="status === 'admin'" to="/admin">
+              <router-link v-if="status === 'admin'" to="/hw_vue_5/admin">
                 <v-tab :value="4">admin</v-tab>
               </router-link>
             </v-tabs>
@@ -35,7 +35,7 @@
         </v-row>
       </v-container>
     </div>
-    <v-container class="bg-surface-variant">
+    <v-container class="bg-surface-variant main">
       <RouterView />
     </v-container>
     <h1>dsda</h1>
@@ -92,6 +92,8 @@ export default {
   border-radius: 0 0 100px 100px / 0 0 50px 50px;
 
 }
+
+
 
 .conainer {
   min-width: 320px;

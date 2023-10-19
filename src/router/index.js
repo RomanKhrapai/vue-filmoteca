@@ -11,56 +11,62 @@ import User from "../components/UserPage.vue";
 
 const routes = [
     {
-        path: "/hw_vue_5/",
+        path: "/",
+        redirect: "/hello-world",
+    },
+    {
+        path: "/",
         name: "home",
+        alias: "/hw_vue_5/",
         component: Home,
         meta: { id: 1 },
+    },
+    {
+        path: "/film/:id",
+        name: "filmById",
+        alias: "/hw_vue_5/film/:id",
+        component: OneFilm,
+        props: (route) => ({ id: route.params.id }),
+        meta: { id: 1 },
+    },
+    {
+        path: "/films",
+        component: Films,
+        alias: "/hw_vue_5/films",
+        meta: { id: 2 },
         children: [
             {
-                path: "film/:id",
-                name: "filmById",
-                component: OneFilm,
-                props: (route) => ({ id: route.params.id }),
-                meta: { id: 1 },
+                path: "",
+                component: PopularFilms,
+                alias: "",
             },
             {
-                path: "films",
-                component: Films,
-                meta: { id: 2 },
-                children: [
-                    {
-                        path: "",
-                        component: PopularFilms,
-                        alias: "",
-                    },
-                    {
-                        path: "serials",
-                        component: PopularSerials,
-                    },
-                    {
-                        path: "persons",
-                        component: Pepsons,
-                    },
-                ],
+                path: "serials",
+                component: PopularSerials,
             },
             {
-                path: "user",
-                component: User,
-                meta: { auth: "user", id: 3 },
-            },
-            {
-                path: "admin",
-                component: Admin,
-                meta: { auth: "admin", id: 4 },
-            },
-            {
-                path: "not-found",
-                alias: ":pathMatch(.*)*",
-                name: "NotFound",
-                component: NotFound,
-                meta: { id: null },
+                path: "persons",
+                component: Pepsons,
             },
         ],
+    },
+    {
+        path: "/user",
+        alias: "/hw_vue_5/user",
+        component: User,
+        meta: { auth: "user", id: 3 },
+    },
+    {
+        path: "/admin",
+        component: Admin,
+        meta: { auth: "admin", id: 4 },
+    },
+    {
+        path: "/not-found",
+        alias: "/:pathMatch(.*)*",
+        name: "NotFound",
+        component: NotFound,
+        meta: { id: null },
     },
 ];
 
