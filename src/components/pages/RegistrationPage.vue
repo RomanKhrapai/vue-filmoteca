@@ -6,7 +6,7 @@
 
 <script>
 import RegistrationForm from "../auth/Registration/Registration.vue";
-import AuthSection from "../auth/authSection.vue";
+import AuthSection from "../auth/AuthSection.vue";
 
 export default {
     name: 'RegistrationPage',
