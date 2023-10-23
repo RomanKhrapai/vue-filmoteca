@@ -65,7 +65,7 @@
 </template>
 <script>
 import { GENRES } from "../constants.js";
-import axiosInstance from "../../services/axios";
+import axiosInstance from "../services/axios";
 
 
 export default {

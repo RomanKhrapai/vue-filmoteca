@@ -1,55 +1,57 @@
 
 <template>
   <div class="container-app">
-    <div class="conainer">
-      <v-container class="header">
-        <v-row>
-          <v-col cols="8">
-            <v-tabs v-model="tab" color="deep-purple-accent-4" align-tabs="start">
-              <router-link to="/hw_vue_5/">
-                <v-tab :value="1" size="x-large" hide-slider variant="text">
-                  <span class="logo">
-                    <v-icon size="x-large" :icon="'mdi-video-vintage'"></v-icon>
-                    Filmoteka
-                  </span>
-                </v-tab>
-              </router-link>
-              <router-link to="/hw_vue_5/films">
-                <v-tab :value="2"> фільми</v-tab>
-              </router-link>
-              <router-link v-if="status === 'user'" to="/hw_vue_5/user">
-                <v-tab :value="3">user</v-tab>
-              </router-link>
-              <router-link v-if="status === 'admin'" to="/hw_vue_5/admin">
-                <v-tab :value="4">admin</v-tab>
-              </router-link>
-            </v-tabs>
-          </v-col>
-          <v-col cols="4">
-            <v-radio-group v-model="status" inline>
-              <v-radio label="guest" value="guest" @click="pushToHome()"></v-radio>
-              <v-radio label="user" value="user" @click="pushToHome()"></v-radio>
-              <v-radio label="admin" value="admin" @click="pushToHome()"></v-radio>
-            </v-radio-group>
-          </v-col>
-        </v-row>
-      </v-container>
+    <div class="bg-heder">
+      <div class="container">
+        <v-tabs v-model="tab" color="deep-purple-accent-4" align-tabs="start">
+          <router-link to="/">
+            <v-tab :value="1" size="x-large" hide-slider variant="text">
+              <span class="logo">
+                <v-icon size="x-large" :icon="'mdi-video-vintage'"></v-icon>
+                Filmoteka
+              </span>
+            </v-tab>
+          </router-link>
+          <router-link to="/films">
+            <v-tab :value="2"> фільми</v-tab>
+          </router-link>
+          <router-link v-if="status === 'guest'" to="/auth/registration">
+            <v-tab :value="5">реестрація</v-tab>
+          </router-link>
+          <router-link v-if="status === 'user'" to="/user">
+            <v-tab :value="3">user</v-tab>
+          </router-link>
+          <router-link v-if="status === 'admin'" to="/admin">
+            <v-tab :value="4">admin</v-tab>
+          </router-link>
+        </v-tabs>
+      </div>
+
+
     </div>
-    <v-container class="bg-surface-variant main">
+    <main class="container">
       <RouterView />
-    </v-container>
-    <h1>dsda</h1>
-    <TogleDayOrNight />
+    </main>
+    <TogleDayOrNight v-model="isNightMode" />
+    <h3 class="text-day-night">{{ !isNightMode ? "Зараз ніч" : "Зараз день" }}</h3>
+    <DynamicClass />
+    <div class="select-role"><v-radio-group v-model="status">
+        <v-radio label="guest" value="guest" @click="pushToHome()"></v-radio>
+        <v-radio label="user" value="user" @click="pushToHome()"></v-radio>
+        <v-radio label="admin" value="admin" @click="pushToHome()"></v-radio>
+      </v-radio-group></div>
   </div>
 </template>
 <script>
 
-import TogleDayOrNight from "./components/TogleDayOrNight.vue";
+import TogleDayOrNight from "@/components/TogleDayOrNight";
+import DynamicClass from "./components/DynamicClass.vue"
 export default {
-  components: { TogleDayOrNight },
+  components: { TogleDayOrNight, DynamicClass },
 
   data() {
     return {
+      isNightMode: false,
       tab: null,
       status: null,
     }
@@ -80,6 +82,26 @@ export default {
 </script>
 
 <style scoped>
+.container {
+  margin-left: auto;
+  margin-right: auto;
+  padding-right: 20px;
+  padding-left: 20px;
+  width: 320px;
+
+  @media screen and (min-width: 768px) {
+    width: 768px;
+    padding-left: 75px;
+    padding-right: 75px;
+  }
+
+  @media screen and (min-width: 1024px) {
+    width: 1024px;
+    padding-left: 71px;
+    padding-right: 71px;
+  }
+}
+
 .logo {
   padding: 9px 10px;
   background: radial-gradient(ellipse at 50%, #3333337e, #33333300 75%);
@@ -95,7 +117,7 @@ export default {
 
 
 
-.conainer {
+.bg-heder {
   min-width: 320px;
   height: 230px;
   animation: show 2s;
@@ -115,7 +137,18 @@ export default {
   #000103;
 }
 
-.container-app {
-  height: 100%;
+.text-day-night {
+  position: fixed;
+  bottom: 0px;
+  right: 30px;
+}
+
+.select-role {
+  position: absolute;
+  top: 10px;
+  background-color: beige;
+  right: 10px;
+  height: 120px;
+  width: 100px;
 }
 </style>

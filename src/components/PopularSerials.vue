@@ -6,7 +6,7 @@
 
 
 <script>
-import axiosInstance from "../../services/axios.js"
+import axiosInstance from "../services/axios.js"
 import GridFilms from "./GridFilms.vue"
 import CardFilm from "./CardFilm.vue"
 

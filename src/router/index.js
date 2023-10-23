@@ -1,30 +1,26 @@
 import { createRouter, createWebHistory } from "vue-router";
-import Home from "../components/Home.vue";
-import Films from "../components/Films.vue";
+import Home from "../components/pages/HomePage.vue";
+import Films from "../components/pages/FilmsPage.vue";
 import OneFilm from "../components/OneFilm.vue";
 import PopularFilms from "../components/PopularFilms.vue";
 import PopularSerials from "../components/PopularSerials.vue";
-import Pepsons from "../components/Pepsons.vue";
-import NotFound from "../components/NotFound.vue";
-import Admin from "../components/AdminPage.vue";
-import User from "../components/UserPage.vue";
+import Persons from "../components/Persons.vue";
+import NotFound from "../components/pages/NotFoundPage.vue";
+import Admin from "../components/pages/AdminPage.vue";
+import User from "../components/pages/UserPage.vue";
+import Registration from "../components/pages/RegistrationPage.vue";
 
 const routes = [
     {
         path: "/",
-        redirect: "/hello-world",
-    },
-    {
-        path: "/",
         name: "home",
-        alias: "/hw_vue_5/",
         component: Home,
         meta: { id: 1 },
     },
+
     {
         path: "/film/:id",
         name: "filmById",
-        alias: "/hw_vue_5/film/:id",
         component: OneFilm,
         props: (route) => ({ id: route.params.id }),
         meta: { id: 1 },
@@ -32,7 +28,6 @@ const routes = [
     {
         path: "/films",
         component: Films,
-        alias: "/hw_vue_5/films",
         meta: { id: 2 },
         children: [
             {
@@ -46,13 +41,12 @@ const routes = [
             },
             {
                 path: "persons",
-                component: Pepsons,
+                component: Persons,
             },
         ],
     },
     {
         path: "/user",
-        alias: "/hw_vue_5/user",
         component: User,
         meta: { auth: "user", id: 3 },
     },
@@ -60,6 +54,11 @@ const routes = [
         path: "/admin",
         component: Admin,
         meta: { auth: "admin", id: 4 },
+    },
+    {
+        path: "/auth/registration",
+        component: Registration,
+        meta: { id: 5 },
     },
     {
         path: "/not-found",
