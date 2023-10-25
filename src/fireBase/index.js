@@ -1,6 +1,5 @@
 import { initializeApp } from "firebase/app";
 
-console.log(import.meta.env.VITE_FB_API_KEY);
 const firebaseConfig = {
     apiKey: import.meta.env.VITE_FB_API_KEY,
     authDomain: import.meta.env.VITE_FB_AUTH_DOMAIN,
