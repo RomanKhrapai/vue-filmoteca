@@ -6,8 +6,6 @@
                 :rules="nameRules" class="registration__input" />
             <CustomInput v-model="email" autocomplete="email" placeholder="Електронна пошта" name="email"
                 :rules="emailRules" class="registration__input" :label="'Електронна пошта'" />
-            <CustomInput v-model="age" autocomplete="age" placeholder="Вік" name="age" :rules="ageRules"
-                class="registration__input" :label="'Вік'" />
             <CustomInput v-model="password" type="password" autocomplete="current-password" placeholder="Пароль"
                 name="password" :rules="passwordRules" class="registration__input" :label="'Пароль'" />
             <CustomInput v-model="confirmPassword" type="password" autocomplete="current-password"
@@ -18,6 +16,8 @@
                 :labelClass="'line__label'" />
             <SubmitButton class="registration__btn" type="submit">Зареєструватися</SubmitButton>
         </CustomForm>
+        <span class="link" @click="$router.push({ name: 'login' })">Вже зареєстрований</span>
+
     </AuthContainer>
 </template>
   
@@ -28,10 +28,11 @@ import CustomInput from "../../shared/form/CustomInput/CustomInput.vue";
 import CustomCheckBox from "../../shared/form/CustomInput/CustomCheckBox.vue";
 import SubmitButton from "../../shared/form/SubmitButton/SubmitButton.vue";
 import {
-    emailValidation, passwordValidation, isRequired, nameValidation, ageValidation
+    emailValidation, passwordValidation, isRequired, nameValidation,
 } from "../../../utils/validationRules";
 import MainTitle from "../../shared/MainTitle.vue";
-import { registerUser } from "../../../services/authService";
+import { useAuthStore } from "../../../store/auth/authStore"
+import { mapActions, mapState } from "pinia"
 
 export default {
     name: "RegistrationApp",
@@ -40,7 +41,8 @@ export default {
         CustomInput,
         SubmitButton,
         AuthContainer,
-        MainTitle, CustomCheckBox
+        MainTitle,
+        CustomCheckBox
     },
     data() {
         return {
@@ -48,18 +50,18 @@ export default {
             email: "",
             password: "",
             confirmPassword: "",
-            age: null,
             agreeToRules: false,
         };
     },
     computed: {
+        ...mapState(useAuthStore, ['isAuthorized']),
         rules() {
             return {
                 emailValidation,
                 passwordValidation,
                 isRequired,
                 nameValidation,
-                ageValidation
+
             };
         },
         nameRules() {
@@ -68,9 +70,7 @@ export default {
         emailRules() {
             return [this.rules.isRequired, this.rules.emailValidation];
         },
-        ageRules() {
-            return [this.rules.isRequired, this.rules.ageValidation];
-        },
+
         passwordRules() {
             return [this.rules.isRequired, this.rules.passwordValidation];
         },
@@ -86,21 +86,26 @@ export default {
         }
     },
     methods: {
+
+        ...mapActions(useAuthStore, ["registerUser"]),
+
         async handleSubmit() {
             const { form } = this.$refs;
+            console.log(form.validate());
             const isFormValid = form.validate();
+            console.log(isFormValid);
             if (isFormValid) {
                 console.log("відправка даних на сервер");
-                try {
-                    const { data } = await registerUser({ name: this.name, email: this.email, password: this.password });
-                    console.log(data);
-                    form.reset()
-                } catch (error) {
-                    console.error(error)
-                }
+                this.registerUser({ name: this.name, email: this.email, password: this.password });
+                form.reset()
             }
         },
     },
+    watch: {
+        isAuthorized() {
+            this.$router.push({ name: 'home' })
+        }
+    }
 };
 </script>
   

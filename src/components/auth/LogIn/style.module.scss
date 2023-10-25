@@ -1,14 +1,5 @@
 @import "../../../assets/scss/variables.scss";
-.link {
-    cursor: pointer;
-
-    text-decoration-line: underline;
-    &:hover {
-        color: $main-color;
-    }
-}
-
-.registration {
+.login {
     &__form {
         display: block;
         flex-direction: column;
@@ -26,5 +17,13 @@
     &__btn {
         margin-top: 15px;
         width: 100%;
+    }
+}
+.link {
+    cursor: pointer;
+
+    text-decoration-line: underline;
+    &:hover {
+        color: $main-color;
     }
 }

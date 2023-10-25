@@ -42,6 +42,7 @@ export default {
     padding: 8px 15px;
     transition: background-color 0.4s, color 0.4s;
     font-family: Montserrat, sans-serif;
+    margin-bottom: 10px;
 
     &:hover {
         background: #fff;

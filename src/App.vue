@@ -15,18 +15,20 @@
           <router-link to="/films">
             <v-tab :value="2"> фільми</v-tab>
           </router-link>
-          <router-link v-if="status === 'guest'" to="/auth/registration">
-            <v-tab :value="5">реестрація</v-tab>
-          </router-link>
-          <router-link v-if="status === 'user'" to="/user">
+
+          <router-link v-if="isAuthorized" to="/user">
             <v-tab :value="3">user</v-tab>
           </router-link>
-          <router-link v-if="status === 'admin'" to="/admin">
-            <v-tab :value="4">admin</v-tab>
-          </router-link>
-        </v-tabs>
-      </div>
+          <div class="auth">
+            <router-link v-if="!isAuthorized" to="/auth/login">
+              <v-tab :value="6">Увійти</v-tab>
+            </router-link>
 
+          </div>
+
+        </v-tabs>
+        <UserMenu v-if="isAuthorized"> </UserMenu>
+      </div>
 
     </div>
     <main class="container">
@@ -34,35 +36,33 @@
     </main>
     <TogleDayOrNight v-model="isNightMode" />
     <h3 class="text-day-night">{{ !isNightMode ? "Зараз ніч" : "Зараз день" }}</h3>
-    <DynamicClass />
-    <div class="select-role"><v-radio-group v-model="status">
-        <v-radio label="guest" value="guest" @click="pushToHome()"></v-radio>
-        <v-radio label="user" value="user" @click="pushToHome()"></v-radio>
-        <v-radio label="admin" value="admin" @click="pushToHome()"></v-radio>
-      </v-radio-group></div>
+
   </div>
 </template>
 <script>
 
 import TogleDayOrNight from "@/components/TogleDayOrNight";
 import DynamicClass from "./components/DynamicClass.vue"
+import UserMenu from "./components/auth/UserMenu.vue";
+import { useAuthStore } from "./store/auth/authStore"
+import { mapActions, mapState } from "pinia"
+import { useGenreStore } from "./store/genresStore";
 export default {
-  components: { TogleDayOrNight, DynamicClass },
+  components: { TogleDayOrNight, DynamicClass, UserMenu },
 
   data() {
     return {
       isNightMode: false,
       tab: null,
-      status: null,
+
     }
   },
   methods: {
-    pushToHome() {
-      this.tab = 1
-      this.$router.push({ name: "home" })
-    },
+    ...mapActions(useGenreStore, ['getgenres']),
+
   },
   computed: {
+    ...mapState(useAuthStore, ['isAuthorized']),
 
   },
   watch: {
@@ -75,7 +75,7 @@ export default {
     }
   },
   created() {
-    this.status = localStorage.getItem("status") || "guest"
+    this.getgenres()
   }
 
 }
@@ -83,6 +83,7 @@ export default {
 
 <style scoped>
 .container {
+  position: relative;
   margin-left: auto;
   margin-right: auto;
   padding-right: 20px;
@@ -143,12 +144,8 @@ export default {
   right: 30px;
 }
 
-.select-role {
+.auth {
   position: absolute;
-  top: 10px;
-  background-color: beige;
-  right: 10px;
-  height: 120px;
-  width: 100px;
+  right: 20px;
 }
 </style>

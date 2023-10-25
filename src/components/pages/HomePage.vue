@@ -1,55 +1,37 @@
 <template>
     <div>
 
-        <GridFilms v-if="films" :films="films" />
-        <Pagination v-model="page" :totalPages="totalPages" />
+        <GridFilms v-if="films" />
+        <Pagination />
 
     </div>
 </template>
 <script>
-import axiosInstance from "../../services/axios"
+import { useFilmStore } from "../../store/film/filmStore"
+import { mapActions, mapState } from "pinia"
 import GridFilms from "../GridFilms.vue"
 import Pagination from "../Pagination.vue"
+import { debounce } from "../../utils/debounce"
 
 export default {
     components: { GridFilms, Pagination },
 
-    data() {
-        return {
-            films: null,
-            page: 1,
-            totalPages: null,
-            timeout: null
-        }
-    },
-
     methods: {
-        getFilms(page) {
-            axiosInstance.get(`/trending/movie/day?api_key=967c6f14dacb0ca10f1175f7851a5869&page=${page}`).then(res => {
+        ...mapActions(useFilmStore, ["getFilms"]),
 
-                this.totalPages = res.data.total_pages <= 500 ? res.data.total_pages : 500;
-                this.films = res.data.results
-            }).catch(error => {
-                console.log(error)
-            })
-        },
-        createDebounce(fnc, delayMs) {
-            clearTimeout(this.timeout);
-            this.timeout = setTimeout(() => {
-                fnc();
-            }, delayMs || 500);
-
-        },
+    },
+    computed: {
+        ...mapState(useFilmStore, ['page', 'films'])
     },
 
     watch: {
         page() {
-            this.createDebounce(() => { this.getFilms(this.page) })
+            debounce(() => { this.getFilms() })
         }
     },
 
     mounted() {
-        this.getFilms(this.page)
+        this.getFilms()
     }
 }
 </script>

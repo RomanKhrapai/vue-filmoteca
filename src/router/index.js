@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router";
+import { useAuthStore } from "../store/auth/authStore";
 import Home from "../components/pages/HomePage.vue";
 import Films from "../components/pages/FilmsPage.vue";
 import OneFilm from "../components/OneFilm.vue";
@@ -9,6 +10,7 @@ import NotFound from "../components/pages/NotFoundPage.vue";
 import Admin from "../components/pages/AdminPage.vue";
 import User from "../components/pages/UserPage.vue";
 import Registration from "../components/pages/RegistrationPage.vue";
+import LogIn from "../components/pages/LogInPage.vue";
 
 const routes = [
     {
@@ -50,15 +52,18 @@ const routes = [
         component: User,
         meta: { auth: "user", id: 3 },
     },
-    {
-        path: "/admin",
-        component: Admin,
-        meta: { auth: "admin", id: 4 },
-    },
+
     {
         path: "/auth/registration",
+        name: "registration",
         component: Registration,
-        meta: { id: 5 },
+        meta: { auth: "guest", id: 5 },
+    },
+    {
+        path: "/auth/login",
+        name: "login",
+        component: LogIn,
+        meta: { auth: "guest", id: 6 },
     },
     {
         path: "/not-found",
@@ -75,11 +80,14 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
-    const currentUser = localStorage.getItem("status");
+    const { isAuthorized } = useAuthStore();
     const authStatus = to.matched.find((record) => record.meta.auth)?.meta
         ?.auth;
-
-    if (!authStatus || authStatus === currentUser) {
+    if (!authStatus) {
+        next();
+    } else if (!isAuthorized && authStatus === "guest") {
+        next();
+    } else if (isAuthorized && authStatus === "user") {
         next();
     } else next({ name: "NotFound" });
 });

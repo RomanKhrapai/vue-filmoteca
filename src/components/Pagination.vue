@@ -1,38 +1,31 @@
 <template>
     <div class="container">
         <button @click="prevPage"><v-icon icon="mdi-chevron-left-circle-outline" color="" size="50px"></v-icon></button>
-        <input type="text" :value="modelValue" @keypress="checkKeyEnter($event.key);"
-            @focusout="changeModalValue($event.target.value)" @input="validationInput($event)">
+        <input type="text" :value="page" @input="validation($event)">
         <button @click="nextPage"><v-icon icon="mdi-chevron-right-circle-outline" color="" size="50px"></v-icon></button>
     </div>
 </template>
 <script>
+import { useFilmStore } from '../store/film/filmStore'
+import { mapActions, mapState } from "pinia"
 
-// return () => { $emit('update:modelValue', num) } 
 export default {
     props: { 'modelValue': Number, "totalPages": Number },
-    data() {
-        return {
-            count: 1,
-        }
-    },
     methods: {
-        checkKeyEnter(key) { if (key === "Enter" && this.count !== null) this.changeModalValue(+this.count) },
-        changeModalValue(val) { if (val !== this.modelValue) this.$emit('update:modelValue', val) },
-        validationInput(e) {
-            const str = +e.target.value;
-            if (Number.isFinite(str) && str !== 0) { return this.count = str <= this.totalPages ? str : this.totalPages }
-            e.target.value = this.count
+        ...mapActions(useFilmStore, ["nextPage", 'prevPage', 'setPage']),
+
+        validation(e) {
+            if (!Number.isFinite(+e.target.value)) {
+                e.target.value = this.page
+                return;
+            }
+            this.setPage(e.target.value)
         },
-        nextPage() {
-            if (this.modelValue >= this.totalPages) { return }
-            this.changeModalValue(this.modelValue + 1)
-        },
-        prevPage() {
-            if (this.modelValue <= 1) { return }
-            this.changeModalValue(this.modelValue - 1)
-        }
-    }
+
+    },
+    computed: {
+        ...mapState(useFilmStore, ['page', "pages"])
+    },
 }
 </script>
 
