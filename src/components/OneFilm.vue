@@ -1,120 +1,119 @@
 <template>
-    <v-container class="bg-surface-variant">
-        <v-card-title :class="['text-h6', `bg-purple-lighten-2`]">
-            Parametr ID {{ id }}
-        </v-card-title>
-        <v-card :loading="loading" class="mx-auto my-12">
+    <div class="">
+
+        <v-card class="mx-auto my-12">
             <template v-slot:loader="{ isActive }">
                 <v-progress-linear :active="isActive" color="deep-purple" height="4" indeterminate></v-progress-linear>
             </template>
             <div v-if="film">
-                <v-img cover height="250" :src="getBackdropImg()"></v-img>
-
+                <v-img v-if="film.backdropUrl" cover :src="film.backdropUrl"></v-img>
+                <v-img v-if="!film.backdropUrl" cover :src="'/src/assets/images/fix-backdrop.jpg'"></v-img>
                 <v-card-item>
                     <v-card-title>{{ film.title }}</v-card-title>
 
                     <v-card-subtitle>
-                        <span class="me-1">Local Favorite</span>
-
-                        <v-icon color="error" icon="mdi-fire-circle" size="small"></v-icon>
+                        <span class="me-1">{{ film.tagline }}</span>
                     </v-card-subtitle>
                 </v-card-item>
 
                 <v-card-text>
                     <v-row align="center" class="mx-0">
-                        <v-rating :model-value="4.5" color="amber" density="compact" half-increments readonly
-                            size="small"></v-rating>
+                        <v-rating :model-value="film.rating" color="amber" density="compact" half-increments readonly
+                            size="large"></v-rating>
 
                         <div class="text-grey ms-4">
-                            4.5 (413)
+                            {{ film.rating }} ({{ film.count }})
                         </div>
                     </v-row>
 
                     <div class="my-4 text-subtitle-1">
-                        $ • Italian, Cafe
+                        {{ film.genres }}
+                    </div>
+                    <div class="my-4 text-subtitle-1">
+                        Дата релізу: {{ film.releaseDate }}
                     </div>
 
-                    <div>Small plates, salads & sandwiches - an intimate setting with 12 indoor seats plus patio seating.
-                    </div>
+                    <div>{{ film.overview }} </div>
                 </v-card-text>
 
                 <v-divider class="mx-4 mb-1"></v-divider>
+                <template v-if="film.videos">
+                    <v-card-title>Дивитися</v-card-title>
+                    <v-card-actions v-for="video, i in film.videos">
+                        <v-btn color="deep-purple-lighten-2" variant="text" @click="showVideo(i)">
+                            {{ video.name }}
+                        </v-btn>
+                    </v-card-actions>
+                </template>
 
-                <v-card-title>Tonight's availability</v-card-title>
+                <Modal v-if="showModal" @close="showModal = false">
+                    <template v-slot:header>
+                        <h3>{{ curentVideo.name }}</h3>
+                    </template>
+                    <template v-slot:body>
+                        <div class="show-video">
+                            <iframe class="show-video__playr" :src='curentVideo.url' frameborder="0" allow="accelerometer;
+    autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        </div>
+                    </template>
+                    <template v-slot:footer="slotProps">
+                        <div class="modal-footer">
+                            <span class="me-1">{{ film.tagline }}</span>
+                            <button class="modal-default-button" @click="$emit('close')">
+                                {{ slotProps.btnCloseText }}
+                            </button>
+                        </div>
 
-                <div class="px-4">
-                    <v-chip-group v-model="selection">
-                        <v-chip>5:30PM</v-chip>
-
-                        <v-chip>7:30PM</v-chip>
-
-                        <v-chip>8:00PM</v-chip>
-
-                        <v-chip>9:00PM</v-chip>
-                    </v-chip-group>
-                </div>
-
-                <v-card-actions>
-                    <v-btn color="deep-purple-lighten-2" variant="text">
-                        Reserve
-                    </v-btn>
-                </v-card-actions>
+                    </template>
+                </Modal>
             </div>
         </v-card>
-    </v-container>
+    </div>
 </template>
 <script>
-import { GENRES } from "../constants.js";
-import axiosInstance from "../services/axios";
-
+import Modal from './shared/Modal.vue'
+import { useFilmStore } from "../store/film/filmStore"
+import { mapActions, mapState } from "pinia"
+import { mixinComponentLife } from "../mixins/mixinComponentLife"
 
 export default {
     props: ['id'],
-
+    components: { Modal },
+    mixins: [mixinComponentLife],
     data() {
 
         return {
-            show: false,
-            loading: true,
-            selection: '',
-            film: null
+            showModal: false,
+            curentVideo: null,
 
         }
     },
     methods: {
-        getFilm() {
-            axiosInstance.get(`/movie/${this.id}?language=en-US`).then(res => {
+        ...mapActions(useFilmStore, ["getFilm"]),
 
-                this.film = res.data
-                this.loading = false;
-            }).catch(error => {
-                console.log(error)
-            })
-        },
-        getBackdropImg() {
-            return "https://image.tmdb.org/t/p/w1280/" + this.film.backdrop_path
-        },
-        getYear() {
-            return !this.dataFilm.release_date ? 'unknown' : this.dataFilm.release_date.slice(0, 4);
-        },
-        getGenres() {
-            const genres = this.dataFilm.genre_ids.map(item => GENRES[item]);
-            if (genres.length > 2) {
-                return genres.splice(2).join(", ");
-            }
-            return genres.join(", ");
-        },
-        getTitle() {
-            console.log(this.film.title);
-            return this.film.title
+        showVideo(index) {
+            this.curentVideo = this.film.videos[index]
+            this.showModal = true
         }
-
+    },
+    computed: {
+        ...mapState(useFilmStore, ['film'])
     },
 
     async created() {
-        await this.getFilm()
+        await this.getFilm(this.id)
     }
 }
 </script>
     
-<style scoped></style>
+<style scoped>
+.show-video__playr {
+    height: 70vh;
+    width: 70vw
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: space-around;
+}
+</style>

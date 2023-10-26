@@ -4,9 +4,12 @@ import getters from "./filmGeters";
 
 export const useFilmStore = defineStore("film", {
     state: () => ({
+        videos: [],
+        oneFilm: {},
         filmsState: [],
         totalPages: null,
         curentPage: 1,
+        genres: "",
     }),
     getters,
     actions,

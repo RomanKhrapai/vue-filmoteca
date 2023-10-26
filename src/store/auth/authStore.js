@@ -5,6 +5,7 @@ import {
     signInWithEmailAndPassword,
     signOut,
     updateProfile,
+    onAuthStateChanged,
 } from "firebase/auth";
 
 const auth = getAuth();
@@ -21,6 +22,17 @@ export const useAuthStore = defineStore("auth", {
     }),
     getters: { name: (state) => state.user.name },
     actions: {
+        async onAuth() {
+            await onAuthStateChanged(auth, (user) => {
+                if (user) {
+                    this.isAuthorized = true;
+                    this.user.name = user.displayName;
+                    this.user.email = user.email;
+                } else {
+                    console.log("No user is signed in.");
+                }
+            });
+        },
         async loginUser({ email, password }) {
             this.isLoading = true;
             try {

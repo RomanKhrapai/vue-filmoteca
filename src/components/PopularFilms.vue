@@ -14,45 +14,33 @@ import axiosInstance from "../services/axios"
 import FilterBox from "./shared/FilterBox.vue"
 import CustomSelect from "./shared/CustomSelect.vue"
 import GridFilms from "./GridFilms.vue"
+import { useFilmStore } from "../store/film/filmStore"
+import { useGenreStore } from "../store/genresStore"
+import { mapActions, mapState } from "pinia"
 export default {
     components: { GridFilms, FilterBox, CustomSelect },
 
     data() {
         return {
-            films: null,
-            ganresOption: [],
             selectedGanres: "All",
 
         }
     },
     methods: {
-        getFilms() {
-            const genres = this.selectedGanres === 'All' ? '' : `&with_genres=${this.selectedGanres}`;
-            axiosInstance.get(`/discover/movie?include_adult=false&include_video=false&language=en-US&page=1&sort_by=popularity.desc${genres}`).then(res => {
-
-                this.films = res.data.results
-            }).catch(error => {
-                console.log(error)
-            })
-        },
-        getGenres() {
-            axiosInstance.get('/genre/movie/list?language=uk').then(res => {
-                this.ganresOption = res.data.genres
-            }).catch(error => {
-                console.log(error)
-            })
-        },
-
+        ...mapActions(useFilmStore, ["getpopularFilms"]),
+    },
+    computed: {
+        ...mapState(useFilmStore, ['page', 'films',]),
+        ...mapState(useGenreStore, { ganresOption: 'genreItems' })
 
     },
     watch: {
         selectedGanres() {
-            this.getFilms();
+            this.getpopularFilms(this.selectedGanres);
         }
     },
     mounted() {
-        this.getFilms();
-        this.getGenres()
+        this.getpopularFilms(this.selectedGanres);
     }
 }
 </script>

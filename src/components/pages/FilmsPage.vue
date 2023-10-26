@@ -7,9 +7,6 @@
         <v-btn @click="redirectTo('/films/serials')">
             Серіали
         </v-btn>
-        <v-btn @click="redirectTo('/films/persons')">
-            Персони
-        </v-btn>
         <router-view></router-view>
     </div>
 </template>

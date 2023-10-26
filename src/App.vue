@@ -29,14 +29,17 @@
         </v-tabs>
         <UserMenu v-if="isAuthorized"> </UserMenu>
       </div>
-
+      <SearchForm />
     </div>
     <main class="container">
       <RouterView />
     </main>
     <TogleDayOrNight v-model="isNightMode" />
-    <h3 class="text-day-night">{{ !isNightMode ? "Зараз ніч" : "Зараз день" }}</h3>
+    <h3 v-colorBlue v-change:size="14" class="text-day-night">{{ !isNightMode ? "Зараз ніч" : "Зараз день"
+    }}</h3>
+    <h3 v-dragAndDrop>Реактивний текст
 
+    </h3>
   </div>
 </template>
 <script>
@@ -44,12 +47,55 @@
 import TogleDayOrNight from "@/components/TogleDayOrNight";
 import DynamicClass from "./components/DynamicClass.vue"
 import UserMenu from "./components/auth/UserMenu.vue";
+import SearchForm from "./components/shared/form/SearchForm.vue";
 import { useAuthStore } from "./store/auth/authStore"
-import { mapActions, mapState } from "pinia"
-import { useGenreStore } from "./store/genresStore";
-export default {
-  components: { TogleDayOrNight, DynamicClass, UserMenu },
+import { mapState } from "pinia"
+import { mixinStart } from "./mixins/mixinStart";
 
+
+export default {
+  directives: {
+    colorBlue: {
+      mounted: (el) => {
+        el.style.color = "#0000ff"
+      }
+    },
+    change: {
+      mounted: (el, param) => {
+        if (param.arg === 'size') {
+          el.style['font-size'] = param.value + "px"
+        }
+        if (param.arg === 'color') {
+          el.style.color = param.value
+        }
+        if (param.arg === 'weight') {
+          el.style['font-weight'] = param.value
+        }
+      }
+    },
+    dragAndDrop: {
+      mounted(el) {
+        el.onmousedown = (e) => {
+          el.style.position = "absolute";
+          el.style.zIndex = 1000;
+          el.onmouseup = () => {
+            document.onmousemove = null;
+            el.onmouseup = null;
+          };
+          el.ondragstart = () => false;
+
+          const moveAt = (e) => {
+            el.style.left = e.pageX - el.offsetWidth / 2 + "px";
+            el.style.top = e.pageY - el.offsetHeight / 2 + "px";
+          }
+
+          document.onmousemove = (e) => moveAt(e);
+        };
+      },
+    }
+  },
+  components: { TogleDayOrNight, DynamicClass, UserMenu, SearchForm },
+  mixins: [mixinStart],
   data() {
     return {
       isNightMode: false,
@@ -57,26 +103,18 @@ export default {
 
     }
   },
-  methods: {
-    ...mapActions(useGenreStore, ['getgenres']),
-
-  },
   computed: {
     ...mapState(useAuthStore, ['isAuthorized']),
+
 
   },
   watch: {
     '$route.meta.id'(id) {
       this.tab = id
     },
-
-    status(newStatus) {
-      localStorage.setItem("status", newStatus);
-    }
   },
-  created() {
-    this.getgenres()
-  }
+
+
 
 }
 </script>

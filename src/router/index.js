@@ -5,9 +5,7 @@ import Films from "../components/pages/FilmsPage.vue";
 import OneFilm from "../components/OneFilm.vue";
 import PopularFilms from "../components/PopularFilms.vue";
 import PopularSerials from "../components/PopularSerials.vue";
-import Persons from "../components/Persons.vue";
 import NotFound from "../components/pages/NotFoundPage.vue";
-import Admin from "../components/pages/AdminPage.vue";
 import User from "../components/pages/UserPage.vue";
 import Registration from "../components/pages/RegistrationPage.vue";
 import LogIn from "../components/pages/LogInPage.vue";
@@ -40,10 +38,6 @@ const routes = [
             {
                 path: "serials",
                 component: PopularSerials,
-            },
-            {
-                path: "persons",
-                component: Persons,
             },
         ],
     },

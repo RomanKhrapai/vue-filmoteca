@@ -15,14 +15,17 @@ export default {
 
     data() {
         return {
-            films: null
+            films: null,
+            text: 'qqqqqqqqqqqqqq',
         }
     },
     methods: {
         getFilms() {
-            axiosInstance.get('/discover/tv?include_adult=false&include_video=false&language=en-US&page=1&sort_by=popularity.desc').then(res => {
-
+            console.log(1111);
+            axiosInstance.get('/discover/tv?include_adult=false&include_video=false&language=uk&page=1&sort_by=popularity.desc').then(res => {
+                console.log(res.data);
                 this.films = res.data.results
+                console.log(this.films);
             }).catch(error => {
                 console.log(error)
             })

@@ -10,6 +10,7 @@
 <script>
 
 export default {
+
     props: { 'modelValue': Boolean },
 
 

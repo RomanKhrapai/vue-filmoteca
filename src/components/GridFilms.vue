@@ -1,6 +1,6 @@
 <template>
     <v-row no-gutters>
-        <v-col v-for="film in films" :key="film.id" cols="12" sm="4">
+        <v-col v-for="film in films" :key="film.id" cols="12" sm="4" v-tooltip="film.title">
             <v-sheet class="ma-2 pa-2">
                 <CardFilm :dataFilm="film" @click="redirectTo(film.id)"></CardFilm>
             </v-sheet>
