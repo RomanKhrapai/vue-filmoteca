@@ -1,62 +1,55 @@
 import { createRouter, createWebHistory } from "vue-router";
 import { useAuthStore } from "../store/auth/authStore";
-import Home from "../components/pages/HomePage.vue";
-import Films from "../components/pages/FilmsPage.vue";
-import OneFilm from "../components/OneFilm.vue";
-import PopularFilms from "../components/PopularFilms.vue";
-import PopularSerials from "../components/PopularSerials.vue";
+import { useFilmStore } from "../store/film/filmStore";
 import NotFound from "../components/pages/NotFoundPage.vue";
-import User from "../components/pages/UserPage.vue";
-import Registration from "../components/pages/RegistrationPage.vue";
-import LogIn from "../components/pages/LogInPage.vue";
 
 const routes = [
     {
         path: "/",
         name: "home",
-        component: Home,
+        component: () => import("../components/pages/HomePage.vue"),
         meta: { id: 1 },
     },
 
     {
         path: "/film/:id",
         name: "filmById",
-        component: OneFilm,
+        component: () => import("../components/OneFilm.vue"),
         props: (route) => ({ id: route.params.id }),
         meta: { id: 1 },
     },
     {
         path: "/films",
-        component: Films,
+        component: () => import("../components/pages/FilmsPage.vue"),
         meta: { id: 2 },
         children: [
             {
                 path: "",
-                component: PopularFilms,
+                component: () => import("../components/PopularFilms.vue"),
                 alias: "",
             },
             {
                 path: "serials",
-                component: PopularSerials,
+                component: () => import("../components/PopularSerials.vue"),
             },
         ],
     },
     {
         path: "/user",
-        component: User,
+        component: () => import("../components/pages/UserPage.vue"),
         meta: { auth: "user", id: 3 },
     },
 
     {
         path: "/auth/registration",
         name: "registration",
-        component: Registration,
+        component: () => import("../components/pages/RegistrationPage.vue"),
         meta: { auth: "guest", id: 5 },
     },
     {
         path: "/auth/login",
         name: "login",
-        component: LogIn,
+        component: () => import("../components/pages/LogInPage.vue"),
         meta: { auth: "guest", id: 6 },
     },
     {
@@ -74,6 +67,17 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
+    const store = useFilmStore();
+    store.isLoading = true;
+    if (to.path === from.path || !from.meta?.id) {
+        const search = to.query?.search;
+        store.searchText = search ? search : null;
+        store.curentPage = to.query?.page ? +to.query.page : 1;
+    } else {
+        store.curentPage = 1;
+        store.searchText = null;
+    }
+
     const { isAuthorized } = useAuthStore();
     const authStatus = to.matched.find((record) => record.meta.auth)?.meta
         ?.auth;

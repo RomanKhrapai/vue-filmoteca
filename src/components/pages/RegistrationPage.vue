@@ -7,6 +7,8 @@
 <script>
 import RegistrationForm from "../auth/Registration/Registration.vue";
 import AuthSection from "../auth/AuthSection.vue";
+import { useFilmStore } from "../../store/film/filmStore"
+import { mapActions, } from "pinia"
 
 
 export default {
@@ -15,6 +17,12 @@ export default {
         RegistrationForm,
         AuthSection,
     },
+    methods: {
+        ...mapActions(useFilmStore, ['falseLoading']),
+    },
+    mounted() {
+        this.falseLoading();
+    }
 
 }
 </script>

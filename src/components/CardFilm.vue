@@ -1,7 +1,7 @@
 <template>
     <v-card class="mx-auto" max-width="344">
-        <v-img :src="dataFilm.posterUrl" cover></v-img>
-
+        <v-img v-if="dataFilm.posterUrl" :src="dataFilm.posterUrl" height="390" cover></v-img>
+        <v-img v-if="!dataFilm.posterUrl" cover :src="'/src/assets/images/fix-poster.jpg'"></v-img>
         <v-card-title>
             {{ dataFilm.title }}
         </v-card-title>

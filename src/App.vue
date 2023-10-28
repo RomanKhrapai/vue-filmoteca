@@ -2,7 +2,7 @@
 <template>
   <div class="container-app">
     <div class="bg-heder">
-      <div class="container">
+      <div class="container heder-nav">
         <v-tabs v-model="tab" color="deep-purple-accent-4" align-tabs="start">
           <router-link to="/">
             <v-tab :value="1" size="x-large" hide-slider variant="text">
@@ -33,68 +33,28 @@
     </div>
     <main class="container">
       <RouterView />
+      <Loader v-if="isLoading" />
     </main>
     <TogleDayOrNight v-model="isNightMode" />
-    <h3 v-colorBlue v-change:size="14" class="text-day-night">{{ !isNightMode ? "Зараз ніч" : "Зараз день"
+    <h3 class="text-day-night">{{ !isNightMode ? "Зараз ніч" : "Зараз день"
     }}</h3>
-    <h3 v-dragAndDrop>Реактивний текст
-
-    </h3>
   </div>
 </template>
 <script>
 
 import TogleDayOrNight from "@/components/TogleDayOrNight";
-import DynamicClass from "./components/DynamicClass.vue"
 import UserMenu from "./components/auth/UserMenu.vue";
 import SearchForm from "./components/shared/form/SearchForm.vue";
+import Loader from "./components/Loader.vue";
 import { useAuthStore } from "./store/auth/authStore"
 import { mapState } from "pinia"
 import { mixinStart } from "./mixins/mixinStart";
+import { useFilmStore } from "./store/film/filmStore";
 
 
 export default {
-  directives: {
-    colorBlue: {
-      mounted: (el) => {
-        el.style.color = "#0000ff"
-      }
-    },
-    change: {
-      mounted: (el, param) => {
-        if (param.arg === 'size') {
-          el.style['font-size'] = param.value + "px"
-        }
-        if (param.arg === 'color') {
-          el.style.color = param.value
-        }
-        if (param.arg === 'weight') {
-          el.style['font-weight'] = param.value
-        }
-      }
-    },
-    dragAndDrop: {
-      mounted(el) {
-        el.onmousedown = (e) => {
-          el.style.position = "absolute";
-          el.style.zIndex = 1000;
-          el.onmouseup = () => {
-            document.onmousemove = null;
-            el.onmouseup = null;
-          };
-          el.ondragstart = () => false;
 
-          const moveAt = (e) => {
-            el.style.left = e.pageX - el.offsetWidth / 2 + "px";
-            el.style.top = e.pageY - el.offsetHeight / 2 + "px";
-          }
-
-          document.onmousemove = (e) => moveAt(e);
-        };
-      },
-    }
-  },
-  components: { TogleDayOrNight, DynamicClass, UserMenu, SearchForm },
+  components: { TogleDayOrNight, UserMenu, SearchForm, Loader },
   mixins: [mixinStart],
   data() {
     return {
@@ -105,8 +65,7 @@ export default {
   },
   computed: {
     ...mapState(useAuthStore, ['isAuthorized']),
-
-
+    ...mapState(useFilmStore, ['isLoading']),
   },
   watch: {
     '$route.meta.id'(id) {
@@ -154,11 +113,14 @@ export default {
 
 }
 
+.heder-nav {
+  background: #25252596;
 
+}
 
 .bg-heder {
   min-width: 320px;
-  height: 230px;
+  height: 170px;
   animation: show 2s;
 
   @keyframes show {
@@ -171,8 +133,8 @@ export default {
     }
   }
 
-  background: linear-gradient(90deg, rgba(0, 0, 0, 0.26), rgba(0, 0, 0, 0.26)),
-  center / auto no-repeat url('../src/images/header/filmoteka-desktop-x2.jpg'),
+  background: linear-gradient(90deg, rgba(0, 0, 0, 0.515), rgba(0, 0, 0, 0.526)),
+  center / auto 100% no-repeat url('../src/assets/images/header.jpg'),
   #000103;
 }
 

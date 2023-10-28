@@ -2,6 +2,7 @@
     <div>
 
         <GridFilms v-if="films" />
+        <NoFilms v-if="films.length === 0 && !isLoading" />
         <Pagination />
 
     </div>
@@ -11,27 +12,36 @@ import { useFilmStore } from "../../store/film/filmStore"
 import { mapActions, mapState } from "pinia"
 import GridFilms from "../GridFilms.vue"
 import Pagination from "../Pagination.vue"
+import NoFilms from "../NoFilms.vue"
 import { debounce } from "../../utils/debounce"
 
+
 export default {
-    components: { GridFilms, Pagination },
+    components: { GridFilms, Pagination, NoFilms },
 
     methods: {
-        ...mapActions(useFilmStore, ["getFilms"]),
+        ...mapActions(useFilmStore, ["getFilms", 'getSearchFilms']),
+        getNewsFilms() {
+            if (this.search) { this.getSearchFilms() }
+            else { this.getFilms() }
+        }
 
     },
     computed: {
-        ...mapState(useFilmStore, ['page', 'films'])
+        ...mapState(useFilmStore, ['page', 'films', 'search', "isLoading"])
     },
 
     watch: {
         page() {
-            debounce(() => { this.getFilms() })
+            debounce(() => { this.getNewsFilms() })
+        },
+        isLoading() {
+            this.getNewsFilms()
         }
     },
 
     mounted() {
-        this.getFilms()
+        this.getNewsFilms()
     }
 }
 </script>

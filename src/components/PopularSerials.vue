@@ -1,38 +1,41 @@
 <template>
-    <GridFilms v-if="films" :films="films">
+    <div>
+        <GridFilms v-if="films" :films="films">
 
-    </GridFilms>
+        </GridFilms>
+        <Pagination />
+    </div>
 </template>
 
 
 <script>
-import axiosInstance from "../services/axios.js"
-import GridFilms from "./GridFilms.vue"
-import CardFilm from "./CardFilm.vue"
+import GridFilms from "./GridFilms.vue";
+import Pagination from "./Pagination.vue";
+import { useFilmStore } from "../store/film/filmStore"
+import { useGenreStore } from "../store/genresStore"
+import { mapActions, mapState } from "pinia"
+import { debounce } from "../utils/debounce"
+
 
 export default {
-    components: { GridFilms, CardFilm },
+    components: { GridFilms, Pagination },
 
-    data() {
-        return {
-            films: null,
-            text: 'qqqqqqqqqqqqqq',
+
+    methods: {
+        ...mapActions(useFilmStore, ["getpopularSerials"]),
+    },
+    computed: {
+        ...mapState(useFilmStore, ['page', 'films',]),
+        ...mapState(useGenreStore, { ganresOption: 'genreItems' })
+
+    },
+    watch: {
+        page() {
+            debounce(() => { this.getpopularSerials(this.selectedGanres); })
         }
     },
-    methods: {
-        getFilms() {
-            console.log(1111);
-            axiosInstance.get('/discover/tv?include_adult=false&include_video=false&language=uk&page=1&sort_by=popularity.desc').then(res => {
-                console.log(res.data);
-                this.films = res.data.results
-                console.log(this.films);
-            }).catch(error => {
-                console.log(error)
-            })
-        },
-    },
     mounted() {
-        this.getFilms()
+        this.getpopularSerials(this.selectedGanres);
     }
 }
 </script>

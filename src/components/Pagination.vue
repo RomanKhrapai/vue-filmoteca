@@ -1,7 +1,9 @@
 <template>
-    <div class="container">
+    <div class="container" v-if="pages !== 1">
         <button @click="prevPage"><v-icon icon="mdi-chevron-left-circle-outline" color="" size="50px"></v-icon></button>
         <input type="text" :value="page" @input="validation($event)">
+        <p>/</p>
+        <p class="pages">{{ pages }}</p>
         <button @click="nextPage"><v-icon icon="mdi-chevron-right-circle-outline" color="" size="50px"></v-icon></button>
     </div>
 </template>
@@ -10,7 +12,6 @@ import { useFilmStore } from '../store/film/filmStore'
 import { mapActions, mapState } from "pinia"
 
 export default {
-    props: { 'modelValue': Number, "totalPages": Number },
     methods: {
         ...mapActions(useFilmStore, ["nextPage", 'prevPage', 'setPage']),
 
@@ -21,15 +22,36 @@ export default {
             }
             this.setPage(e.target.value)
         },
-
     },
     computed: {
         ...mapState(useFilmStore, ['page', "pages"])
     },
+    watch: {
+        page() {
+            this.$router.push({
+                query: { ...this.$router.query, page: this.page }
+            })
+        }
+    }
 }
 </script>
 
 <style scoped>
+.pages {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+p {
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 input {
     text-align: center;
     width: 40px;

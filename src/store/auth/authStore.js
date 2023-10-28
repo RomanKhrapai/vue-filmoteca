@@ -1,4 +1,5 @@
 import { defineStore } from "pinia";
+import { useToast } from "vue-toastification";
 import {
     getAuth,
     createUserWithEmailAndPassword,
@@ -9,6 +10,7 @@ import {
 } from "firebase/auth";
 
 const auth = getAuth();
+const toast = useToast();
 
 export const useAuthStore = defineStore("auth", {
     state: () => ({
@@ -28,8 +30,9 @@ export const useAuthStore = defineStore("auth", {
                     this.isAuthorized = true;
                     this.user.name = user.displayName;
                     this.user.email = user.email;
-                } else {
-                    console.log("No user is signed in.");
+                    if (user.displayName) {
+                        toast.success("Доброго дня " + user.displayName + "!");
+                    }
                 }
             });
         },
@@ -47,9 +50,23 @@ export const useAuthStore = defineStore("auth", {
                 this.user.name = user.displayName;
                 this.user.email = user.email;
                 this.isLoading = false;
+                //  toast.success("Доброго дня " + user.displayName + "!");
             } catch (error) {
                 const errorCode = error.code;
-                const errorMessage = error.message;
+                console.log(errorCode);
+                let atherError = true;
+                switch (errorCode) {
+                    case " auth/invalid-login-credentials":
+                        toast.error("Пароль або пошта не вірний!");
+                        atherError = false;
+                        break;
+
+                    default:
+                        if (!atherError) {
+                            toast.error("Помилка реєстрації!");
+                        }
+                        break;
+                }
                 this.isLoading = false;
             }
         },
@@ -62,9 +79,6 @@ export const useAuthStore = defineStore("auth", {
             } catch (error) {
                 this.isLoading = false;
             }
-        },
-        boom() {
-            console.log(555555);
         },
         async registerUser(payload) {
             this.isLoading = true;
@@ -80,8 +94,24 @@ export const useAuthStore = defineStore("auth", {
                 this.isLoading = false;
             } catch (error) {
                 const errorCode = error.code;
+                let atherError = true;
 
-                console.log(errorCode);
+                switch (errorCode) {
+                    case "auth/email-already-in-use":
+                        toast.error("Така пошта вже використовується!");
+                        atherError = false;
+                        break;
+                    case "auth/invalid-display-name":
+                        toast.error("імя не може бути пустим!");
+                        atherError = false;
+                        break;
+
+                    default:
+                        if (!atherError) {
+                            toast.error("Помилка реєстрації!");
+                        }
+                        break;
+                }
                 this.isLoading = false;
             }
         },

@@ -23,7 +23,6 @@ export default {
         redirectTo(path) {
             this.$router.push({
                 path,
-
             })
         },
     }

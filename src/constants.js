@@ -1,27 +1,24 @@
-export const GENRES = {
-    28: "Action",
-    12: "Adventure",
-    16: "Animation",
-    35: "Comedy",
-    80: "Crime",
-    99: "Documentary",
-    18: "Drama",
-    10751: "Family",
-    14: "Fantasy",
-    36: "History",
-    27: "Horror",
-    10402: "Music",
-    9648: "Mystery",
-    10749: "Romance",
-    878: "Science Fiction",
-    10770: "TV Movie",
-    53: "Thriller",
-    10752: "War",
-    37: "Western",
+export const TOAST_OPTIONS = {
+    position: "top-right",
+    timeout: 3000,
+    closeOnClick: true,
+    pauseOnFocusLoss: true,
+    pauseOnHover: true,
+    draggable: true,
+    draggablePercent: 0.6,
+    showCloseButtonOnHover: false,
+    hideProgressBar: true,
+    closeButton: "button",
+    icon: true,
+    rtl: false,
+    transition: "Vue-Toastification__bounce",
+    maxToasts: 20,
+    newestOnTop: true,
 };
-export const baseImgUrl = "https://image.tmdb.org/t/p/";
-export const backdropImgSizes = ["w300", "w780", "w1280", "original"];
-export const posterImgSizes = [
+
+export const BASE_IMG_URL = "https://image.tmdb.org/t/p/";
+export const BACKDROP_IMG_SIZES = ["w300", "w780", "w1280", "original"];
+export const POSTER_IMG_SIZES = [
     "w92",
     "w154",
     "w185",
@@ -30,4 +27,3 @@ export const posterImgSizes = [
     "w780",
     "original",
 ];
-export const profileImgSizes = ["w45", "w185", "h632", "original"];

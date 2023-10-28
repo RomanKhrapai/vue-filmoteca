@@ -5,6 +5,8 @@
                 :defaultOption="{ name: 'Всі жанри', value: 'All' }" :label="'жанр:'"></CustomSelect>
         </FilterBox>
         <GridFilms v-if="films" :films="films" />
+        <Pagination />
+
     </div>
 </template>
 
@@ -17,8 +19,11 @@ import GridFilms from "./GridFilms.vue"
 import { useFilmStore } from "../store/film/filmStore"
 import { useGenreStore } from "../store/genresStore"
 import { mapActions, mapState } from "pinia"
+import { debounce } from "../utils/debounce"
+import Pagination from "./Pagination.vue"
+
 export default {
-    components: { GridFilms, FilterBox, CustomSelect },
+    components: { GridFilms, FilterBox, CustomSelect, Pagination },
 
     data() {
         return {
@@ -37,6 +42,9 @@ export default {
     watch: {
         selectedGanres() {
             this.getpopularFilms(this.selectedGanres);
+        },
+        page() {
+            debounce(() => { this.getpopularFilms(this.selectedGanres); })
         }
     },
     mounted() {

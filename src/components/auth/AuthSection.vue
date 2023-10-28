@@ -20,7 +20,7 @@ export default {
     background: url('../../assets/images/bg-auth.jpg') no-repeat;
     background-size: cover;
     background-position: center;
-    min-height: calc(100vh - 30px);
+    min-height: calc(100vh - 170px);
     z-index: 1;
 
     &::before {

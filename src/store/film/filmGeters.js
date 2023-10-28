@@ -1,5 +1,5 @@
 import { useGenreStore } from "../genresStore";
-import { baseImgUrl, posterImgSizes } from "../../constants";
+import { BASE_IMG_URL, POSTER_IMG_SIZES } from "../../constants";
 
 export default {
     films: (state) => {
@@ -8,13 +8,15 @@ export default {
         const newArrFilms = state.filmsState.map((film) => {
             const {
                 id,
-                title,
+                title = film?.name || "Назва не відома",
                 poster_path,
-                release_date,
+                release_date = film?.first_air_date || "/-/-/",
                 genre_ids,
                 vote_average: rating,
             } = film;
-            const posterUrl = baseImgUrl + posterImgSizes[2] + poster_path;
+            const posterUrl = poster_path
+                ? BASE_IMG_URL + POSTER_IMG_SIZES[2] + poster_path
+                : null;
             const releaseYear = !release_date
                 ? "(не відомо)"
                 : release_date.slice(0, 4);
@@ -29,7 +31,7 @@ export default {
     film: (state) => {
         const {
             id,
-            title,
+            title = state.oneFilm?.name || "Назва не відома",
             tagline,
             backdrop_path,
             overview,
@@ -40,9 +42,11 @@ export default {
             vote_average,
         } = state.oneFilm;
 
-        const posterUrl = baseImgUrl + posterImgSizes[2] + poster_path;
+        const posterUrl = poster_path
+            ? BASE_IMG_URL + POSTER_IMG_SIZES[2] + poster_path
+            : null;
         const backdropUrl = backdrop_path
-            ? baseImgUrl + posterImgSizes[5] + backdrop_path
+            ? BASE_IMG_URL + POSTER_IMG_SIZES[5] + backdrop_path
             : null;
 
         const genres = genresArr?.map((genre) => genre.name).join(", ");
@@ -70,4 +74,6 @@ export default {
     },
     pages: (state) => state.totalPages,
     page: (state) => state.curentPage,
+    search: (state) => state.searchText,
+    isShowLoading: (state) => state.isLoading,
 };

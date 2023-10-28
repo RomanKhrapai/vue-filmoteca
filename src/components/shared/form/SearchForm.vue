@@ -9,6 +9,8 @@
 </template>
 
 <script>
+import { useFilmStore } from '../../../store/film/filmStore';
+import { mapState, mapActions } from "pinia"
 
 export default {
     data() {
@@ -19,19 +21,30 @@ export default {
         }
     },
     methods: {
-
-        searchFilm() {
+        ...mapActions(useFilmStore, ['getSearchFilms']),
+        searchFilm(e) {
             const res = this.searchValidation(this.inputValue)
             if (!res.error) {
                 this.error = null;
-                alert("запит за виразом - " + res.value)
-                console.log(res.value);
+
+                const routeName = this.$route?.name === 'home' ? {} : { name: "home" }
+                this.$router.push({ ...routeName, query: { search: res.value } })
+                this.getSearchFilms(res.value)
                 return
             }
             this.error = res.errorMessage;
             this.timer = setTimeout(() => { this.error = null }, 2000)
         }
+    },
+    computed: {
+        ...mapState(useFilmStore, ["searchText"])
+    },
+    watch: {
+        searchText() {
+            this.inputValue = this.searchText
+        }
     }
+
 };
 </script>
   
@@ -47,18 +60,23 @@ export default {
 
 .form-input {
     border-radius: 10px 0 0 10px;
+    height: 40px;
     padding-left: 20px;
     border-right: none;
+    font-size: 20px;
     background-color: #333333;
 }
 
 .form-button {
+    height: 40px;
     border-radius: 0 10px 10px 0;
-    padding-right: 10px;
+    padding: 0 20px 0 10px;
+    font-size: 20px;
     background-color: #333333;
 }
 
 .form-error {
+    margin-top: 5px;
     color: red;
 }
 
@@ -66,6 +84,6 @@ export default {
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-top: 10px;
+    margin-top: 40px;
 }
 </style>

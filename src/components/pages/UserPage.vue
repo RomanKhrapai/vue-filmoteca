@@ -8,6 +8,8 @@
 
 
 <script>
+import { useFilmStore } from "../../store/film/filmStore"
+import { mapActions, } from "pinia"
 export default {
 
     data() {
@@ -16,7 +18,10 @@ export default {
         }
     },
     methods: {
-
+        ...mapActions(useFilmStore, ['falseLoading']),
+    },
+    mounted() {
+        this.falseLoading();
     }
 }
 </script>

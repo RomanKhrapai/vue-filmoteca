@@ -74,12 +74,10 @@
 import Modal from './shared/Modal.vue'
 import { useFilmStore } from "../store/film/filmStore"
 import { mapActions, mapState } from "pinia"
-import { mixinComponentLife } from "../mixins/mixinComponentLife"
 
 export default {
     props: ['id'],
     components: { Modal },
-    mixins: [mixinComponentLife],
     data() {
 
         return {
