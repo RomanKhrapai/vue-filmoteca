@@ -1,6 +1,6 @@
 
 <template>
-  <div class="container-app">
+  <div class="container-app" :style="{ backgroundColor: !isNightMode ? '#fff' : '#000000e0' }">
     <div class="bg-heder">
       <div class="container heder-nav">
         <v-tabs v-model="tab" color="deep-purple-accent-4" align-tabs="start">
@@ -36,8 +36,7 @@
       <Loader v-if="isLoading" />
     </main>
     <TogleDayOrNight v-model="isNightMode" />
-    <h3 class="text-day-night">{{ !isNightMode ? "Зараз ніч" : "Зараз день"
-    }}</h3>
+    <!-- <h3 class="text-day-night">{{ !isNightMode ? "Зараз ніч" : "Зараз день"}}</h3> -->
   </div>
 </template>
 <script>

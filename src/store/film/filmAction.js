@@ -1,5 +1,7 @@
 import axiosInstance from "../../services/axios";
 import { incrementpage, decrementPage, setValidPage } from "./filmMutation";
+import { useToast } from "vue-toastification";
+const toast = useToast();
 
 export default {
     getpopularSerials(genre) {
@@ -13,6 +15,11 @@ export default {
                     data.total_pages <= 500 ? data.total_pages : 500;
                 this.filmsState = data.results;
                 this.isLoading = false;
+            })
+            .catch((error) => {
+                toast.error("Сталася помилка отримання даних!");
+                console.log(error);
+                this.isLoading = false;
             });
     },
     getpopularFilms(genre) {
@@ -25,6 +32,11 @@ export default {
                 this.totalPages =
                     data.total_pages <= 500 ? data.total_pages : 500;
                 this.filmsState = data.results;
+                this.isLoading = false;
+            })
+            .catch((error) => {
+                toast.error("Сталася помилка отримання даних!");
+                console.log(error);
                 this.isLoading = false;
             });
     },
@@ -41,6 +53,11 @@ export default {
                     data.total_pages <= 500 ? data.total_pages : 500;
                 this.filmsState = data.results;
                 this.isLoading = false;
+            })
+            .catch((error) => {
+                toast.error("Сталася помилка отримання даних!");
+                console.log(error);
+                this.isLoading = false;
             });
     },
     getFilms() {
@@ -54,6 +71,10 @@ export default {
                     data.total_pages <= 500 ? data.total_pages : 500;
                 this.filmsState = data.results;
                 this.isLoading = false;
+            })
+            .catch((error) => {
+                console.log(error);
+                this.isLoading = false;
             });
     },
     getFilm(id) {
@@ -64,6 +85,7 @@ export default {
                 this.isLoading = false;
             })
             .catch((error) => {
+                toast.error("Сталася помилка отримання даних!");
                 console.log(error);
                 this.isLoading = false;
             });
@@ -73,7 +95,9 @@ export default {
                 this.videos = res.data.results;
             })
             .catch((error) => {
+                toast.error("Сталася помилка отримання даних!");
                 console.log(error);
+                this.isLoading = false;
             });
     },
     setOptions(options) {
