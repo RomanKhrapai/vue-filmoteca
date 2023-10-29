@@ -1,7 +1,7 @@
 <template>
     <div>
 
-        <GridFilms v-if="films" />
+        <GridFilms v-if="films" :films="films" />
         <NoFilms v-if="films.length === 0 && !isLoading" />
         <Pagination />
 

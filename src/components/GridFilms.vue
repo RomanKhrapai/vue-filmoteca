@@ -9,12 +9,12 @@
 </template>
 <script>
 import CardFilm from "./CardFilm.vue"
-import { useFilmStore } from "../../src/store/film/filmStore"
-import { mapState } from "pinia"
+// import { useFilmStore } from "../../src/store/film/filmStore"
+// import { mapState } from "pinia"
 
 export default {
     components: { CardFilm },
-
+    props: ['films'],
     methods: {
         redirectTo(id) {
             if (this.$route.path === "/films/serials") {
@@ -29,7 +29,7 @@ export default {
         },
     },
     computed: {
-        ...mapState(useFilmStore, ['films']),
+        //  ...mapState(useFilmStore, ['films']),
         textTooltip() {
             return this.$route.path === "/films/serials" ? "Серіал не містить деталей" : "Натисніть щоб відкрити деталі"
         }

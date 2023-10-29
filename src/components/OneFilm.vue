@@ -35,6 +35,14 @@
 
                     <div>{{ filmsStore.film.overview }} </div>
                 </v-card-text>
+                <template v-if="userStore.isAuthorized">
+                    <v-btn @click="userStore.addFilmToLibrary(filmsStore.film, false,)">
+                        Додати до запланованих
+                    </v-btn>
+                    <v-btn @click="userStore.addFilmToLibrary(filmsStore.film, true,)">
+                        Додати до переглянутих
+                    </v-btn>
+                </template>
 
                 <v-divider class="mx-4 mb-1"></v-divider>
                 <template v-if="filmsStore.film.videos">
@@ -73,7 +81,8 @@
 <script>
 import Modal from './shared/Modal.vue'
 import { useFilmStore } from "../store/film/filmStore"
-import { ref, toRefs } from 'vue'
+import { ref } from 'vue'
+import { useAuthStore } from '../store/auth/authStore';
 
 export default {
 
@@ -81,6 +90,7 @@ export default {
     components: { Modal },
     setup(props) {
         const { id } = (props);
+        const userStore = useAuthStore();
         const filmsStore = useFilmStore();
         const showModal = ref(false);
         const curentVideo = ref(null);
@@ -88,9 +98,8 @@ export default {
             curentVideo.value = filmsStore.film.videos[index];
             showModal.value = true;
         }
-
         filmsStore.getFilm(id);
-        return { filmsStore, showModal, curentVideo, showVideo }
+        return { filmsStore, userStore, showModal, curentVideo, showVideo }
     },
 
 

@@ -16,8 +16,8 @@
             <v-tab :value="2"> фільми</v-tab>
           </router-link>
 
-          <router-link v-if="isAuthorized" to="/user">
-            <v-tab :value="3">user</v-tab>
+          <router-link v-if="isAuthorized" to="/library">
+            <v-tab :value="3">Бібліотека</v-tab>
           </router-link>
           <div class="auth">
             <router-link v-if="!isAuthorized" to="/auth/login">
@@ -63,13 +63,18 @@ export default {
     }
   },
   computed: {
-    ...mapState(useAuthStore, ['isAuthorized']),
+    ...mapState(useAuthStore, ['isAuthorized', 'path']),
     ...mapState(useFilmStore, ['isLoading']),
   },
   watch: {
     '$route.meta.id'(id) {
       this.tab = id
     },
+    isAuthorized(newVal) {
+      if (newVal === true && this.path) {
+        this.$router.push({ path: this.path })
+      }
+    }
   },
 
 

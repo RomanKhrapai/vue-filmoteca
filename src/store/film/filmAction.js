@@ -52,6 +52,7 @@ export default {
                 this.totalPages =
                     data.total_pages <= 500 ? data.total_pages : 500;
                 this.filmsState = data.results;
+                console.log(data.results);
                 this.isLoading = false;
             })
             .catch((error) => {
@@ -100,11 +101,7 @@ export default {
                 this.isLoading = false;
             });
     },
-    setOptions(options) {
-        if (options?.page) {
-            this.page = options.page;
-        }
-    },
+
     falseLoading() {
         this.isLoading = false;
     },

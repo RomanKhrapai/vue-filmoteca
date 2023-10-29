@@ -8,6 +8,14 @@ import {
     updateProfile,
     onAuthStateChanged,
 } from "firebase/auth";
+import {
+    collection,
+    addDoc,
+    getDocs,
+    deleteDoc,
+    doc,
+} from "firebase/firestore";
+import { db } from "../../fireBase";
 
 const auth = getAuth();
 const toast = useToast();
@@ -17,16 +25,71 @@ export const useAuthStore = defineStore("auth", {
         isError: false,
         isLoading: false,
         isAuthorized: false,
+        oldPath: null,
         user: {
             name: null,
             email: null,
+            library: [],
         },
     }),
-    getters: { name: (state) => state.user.name },
+    getters: {
+        name: (state) => state.user.name,
+        path: (state) => state.oldPath,
+        plannedFilms: (state) => {
+            return state.user.library.filter((film) => !film.isWatched);
+        },
+        watchedFilms: (state) =>
+            state.user.library.filter((film) => film.isWatched),
+    },
     actions: {
+        async delfilm(idDoc) {
+            this.user.library = this.user.library.filter(
+                (film) => film.idDoc !== idDoc
+            );
+            await deleteDoc(
+                doc(
+                    db,
+                    "users/user/${auth.currentUser.uid}",
+                    "A8QuVQa2yAE0DLlX4Aqz"
+                )
+            );
+        },
+        async getLibrari() {
+            const querySnapshot = await getDocs(
+                collection(db, `users/user/${auth.currentUser.uid}`)
+            );
+            querySnapshot.forEach((doc) => {
+                const film = doc.data();
+                film.idDoc = doc.id;
+                this.user.library.push(film);
+            });
+        },
+        async addFilmToLibrary(data, isWatched) {
+            try {
+                if (
+                    this.user.library.find(
+                        (film) =>
+                            film.id === data.id && film.isWatched === isWatched
+                    )
+                ) {
+                    return;
+                }
+                const film = { ...data };
+                film.genres = film.genres.split(", ");
+                film.isWatched = isWatched;
+                const docRef = await addDoc(
+                    collection(db, `users/user/${auth.currentUser.uid}`),
+                    film
+                );
+                this.user.library.push(film);
+            } catch (e) {
+                console.error("Error adding document: ", e);
+            }
+        },
         async onAuth() {
             await onAuthStateChanged(auth, (user) => {
                 if (user) {
+                    this.getLibrari();
                     this.isAuthorized = true;
                     this.user.name = user.displayName;
                     this.user.email = user.email;

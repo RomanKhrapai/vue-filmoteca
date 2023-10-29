@@ -35,9 +35,20 @@ const routes = [
         ],
     },
     {
-        path: "/user",
-        component: () => import("../components/pages/UserPage.vue"),
+        path: "/library",
+        component: () => import("../components/pages/LibraryPage.vue"),
         meta: { auth: "user", id: 3 },
+        children: [
+            {
+                path: "",
+                component: () => import("../components/PlannedFilms.vue"),
+                //alias: "",
+            },
+            {
+                path: "watched",
+                component: () => import("../components/WatchedFilms.vue"),
+            },
+        ],
     },
 
     {
@@ -78,14 +89,20 @@ router.beforeEach((to, from, next) => {
         store.searchText = null;
     }
 
-    const { isAuthorized } = useAuthStore();
+    const auth = useAuthStore();
     const authStatus = to.matched.find((record) => record.meta.auth)?.meta
         ?.auth;
     if (!authStatus) {
         next();
-    } else if (!isAuthorized && authStatus === "guest") {
+    } else if (
+        !auth.isAuthorized &&
+        (to.path === "/library" || to.path === "/library/watched")
+    ) {
+        auth.oldPath = to.path;
+        next({ name: "home" });
+    } else if (!auth.isAuthorized && authStatus === "guest") {
         next();
-    } else if (isAuthorized && authStatus === "user") {
+    } else if (auth.isAuthorized && authStatus === "user") {
         next();
     } else next({ name: "NotFound" });
 });
