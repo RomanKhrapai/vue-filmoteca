@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router";
-import { useAuthStore } from "../store/auth/authStore";
+import { useAuthStore } from "../store/authStore";
 import { useFilmStore } from "../store/film/filmStore";
 import NotFound from "../components/pages/NotFoundPage.vue";
 

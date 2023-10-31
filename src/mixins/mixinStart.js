@@ -1,4 +1,4 @@
-import { useAuthStore } from "../store/auth/authStore";
+import { useAuthStore } from "../store/authStore";
 import { useGenreStore } from "../store/genresStore";
 import { mapActions } from "pinia";
 

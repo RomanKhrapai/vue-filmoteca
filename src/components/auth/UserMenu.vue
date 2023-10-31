@@ -1,6 +1,6 @@
 <template>
     <div class="menu-container">
-        <div class="menu-btn" @click="logOut()">
+        <div class="menu-btn" @click="useLogOut()">
             <v-icon size="large" :icon="'mdi-account'"></v-icon>
             {{ name }}
         </div>
@@ -8,7 +8,7 @@
 </template>
   
 <script>
-import { useAuthStore } from "../../store/auth/authStore"
+import { useAuthStore } from "../../store/authStore"
 import { mapActions, mapState } from "pinia"
 
 export default {
@@ -20,7 +20,13 @@ export default {
     },
     methods: {
         ...mapActions(useAuthStore, ['logOut']),
+        useLogOut() {
 
+            this.logOut();
+            if (this.$route.meta?.auth === 'user') {
+                this.$router.push({ name: 'home' })
+            }
+        }
     },
 
 };

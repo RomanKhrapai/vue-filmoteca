@@ -29,6 +29,10 @@ export default {
         return newArrFilms;
     },
     film: (state) => {
+        if (!state.oneFilm) {
+            return null;
+        }
+
         const {
             id,
             title = state.oneFilm?.name || "Назва не відома",

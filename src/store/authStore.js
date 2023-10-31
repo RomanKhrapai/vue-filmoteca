@@ -15,7 +15,7 @@ import {
     deleteDoc,
     doc,
 } from "firebase/firestore";
-import { db } from "../../fireBase";
+import { db } from "../fireBase";
 
 const auth = getAuth();
 const toast = useToast();
@@ -23,7 +23,6 @@ const toast = useToast();
 export const useAuthStore = defineStore("auth", {
     state: () => ({
         isError: false,
-        isLoading: false,
         isAuthorized: false,
         oldPath: null,
         user: {
@@ -42,22 +41,24 @@ export const useAuthStore = defineStore("auth", {
             state.user.library.filter((film) => film.isWatched),
     },
     actions: {
+        clearPath() {
+            this.oldPath = null;
+        },
+
         async delfilm(idDoc) {
             this.user.library = this.user.library.filter(
                 (film) => film.idDoc !== idDoc
             );
             await deleteDoc(
-                doc(
-                    db,
-                    "users/user/${auth.currentUser.uid}",
-                    "A8QuVQa2yAE0DLlX4Aqz"
-                )
+                doc(db, `users/user/${auth.currentUser.uid}`, idDoc)
             );
         },
         async getLibrari() {
             const querySnapshot = await getDocs(
                 collection(db, `users/user/${auth.currentUser.uid}`)
             );
+            this.user.library = [];
+
             querySnapshot.forEach((doc) => {
                 const film = doc.data();
                 film.idDoc = doc.id;
@@ -77,11 +78,11 @@ export const useAuthStore = defineStore("auth", {
                 const film = { ...data };
                 film.genres = film.genres.split(", ");
                 film.isWatched = isWatched;
-                const docRef = await addDoc(
+                await addDoc(
                     collection(db, `users/user/${auth.currentUser.uid}`),
                     film
                 );
-                this.user.library.push(film);
+                this.getLibrari();
             } catch (e) {
                 console.error("Error adding document: ", e);
             }
@@ -113,7 +114,6 @@ export const useAuthStore = defineStore("auth", {
                 this.user.name = user.displayName;
                 this.user.email = user.email;
                 this.isLoading = false;
-                //  toast.success("Доброго дня " + user.displayName + "!");
             } catch (error) {
                 const errorCode = error.code;
                 console.log(errorCode);
@@ -137,6 +137,8 @@ export const useAuthStore = defineStore("auth", {
             this.isLoading = true;
             try {
                 await signOut(auth);
+                this.user.library = [];
+                this.user.name = null;
                 this.isAuthorized = false;
                 this.isLoading = false;
             } catch (error) {

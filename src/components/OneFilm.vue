@@ -1,7 +1,7 @@
 <template>
     <div class="">
 
-        <v-card class="mx-auto my-12">
+        <v-card v-if="filmsStore.film" class="mx-auto my-12">
             <template v-slot:loader="{ isActive }">
                 <v-progress-linear :active="isActive" color="deep-purple" height="4" indeterminate></v-progress-linear>
             </template>
@@ -35,14 +35,14 @@
 
                     <div>{{ filmsStore.film.overview }} </div>
                 </v-card-text>
-                <template v-if="userStore.isAuthorized">
-                    <v-btn @click="userStore.addFilmToLibrary(filmsStore.film, false,)">
+                <div class="btn-box" v-if="userStore.isAuthorized">
+                    <v-btn v-if="isBeforWatchedFilm" @click="userStore.addFilmToLibrary(filmsStore.film, false,)">
                         Додати до запланованих
                     </v-btn>
-                    <v-btn @click="userStore.addFilmToLibrary(filmsStore.film, true,)">
+                    <v-btn v-if="isWatchedFilm" @click="userStore.addFilmToLibrary(filmsStore.film, true,)">
                         Додати до переглянутих
                     </v-btn>
-                </template>
+                </div>
 
                 <v-divider class="mx-4 mb-1"></v-divider>
                 <template v-if="filmsStore.film.videos">
@@ -53,7 +53,7 @@
                         </v-btn>
                     </v-card-actions>
                 </template>
-
+                <Reviews />
                 <Modal v-if="showModal" @close="showModal = false">
                     <template v-slot:header>
                         <h3>{{ curentVideo.name }}</h3>
@@ -76,30 +76,41 @@
                 </Modal>
             </div>
         </v-card>
+        <NoFilm v-if="!filmsStore.film" />
     </div>
 </template>
 <script>
-import Modal from './shared/Modal.vue'
-import { useFilmStore } from "../store/film/filmStore"
+import Modal from './shared/Modal.vue';
+import NoFilm from './NoFilm.vue';
+import Reviews from './Reviews.vue'
+import { useFilmStore } from "../store/film/filmStore";
+import { useAuthStore } from '../store/authStore';
+import { useReviewsStore } from '../store/reviewsStore';
+import useComputed from '../mixins/useComputed';
 import { ref } from 'vue'
-import { useAuthStore } from '../store/auth/authStore';
 
 export default {
 
     props: ['id'],
-    components: { Modal },
+    components: { Modal, NoFilm, Reviews },
     setup(props) {
         const { id } = (props);
         const userStore = useAuthStore();
         const filmsStore = useFilmStore();
+        const reviewsStore = useReviewsStore();
         const showModal = ref(false);
         const curentVideo = ref(null);
+
+        const { isWatchedFilm, isBeforWatchedFilm } = useComputed(id, userStore)
         const showVideo = (index) => {
             curentVideo.value = filmsStore.film.videos[index];
             showModal.value = true;
         }
+
         filmsStore.getFilm(id);
-        return { filmsStore, userStore, showModal, curentVideo, showVideo }
+        reviewsStore.getReviews(id);
+
+        return { filmsStore, userStore, showModal, curentVideo, showVideo, isWatchedFilm, isBeforWatchedFilm }
     },
 
 
@@ -107,6 +118,12 @@ export default {
 </script>
     
 <style scoped>
+.btn-box {
+    padding: 5px;
+    display: flex;
+    justify-content: center;
+}
+
 .show-video__playr {
     height: 70vh;
     width: 70vw

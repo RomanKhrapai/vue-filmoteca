@@ -10,13 +10,16 @@
             {{ getGenres() }} | {{ dataFilm.releaseYear }}
         </v-card-subtitle>
         <StarsRating :rating="dataFilm.rating"></StarsRating>
-        <v-btn v-if="dataFilm?.idDoc" @click.stop="delfilm(dataFilm.idDoc)">
-            видалити
-        </v-btn>
+        <div class="btn-box" v-if="dataFilm?.idDoc">
+            <v-btn v-if="dataFilm?.idDoc" @click.stop="delfilm(dataFilm.idDoc)">
+                видалити
+            </v-btn>
+        </div>
+
     </v-card>
 </template>
 <script>
-import { useAuthStore } from '../store/auth/authStore';
+import { useAuthStore } from '../store/authStore';
 import { mapActions } from 'pinia';
 import StarsRating from './shared/StarsRating.vue'
 
@@ -38,4 +41,10 @@ export default {
 }
 </script>
   
-<style scoped></style>
+<style scoped>
+.btn-box {
+    padding: 5px;
+    display: flex;
+    justify-content: center;
+}
+</style>

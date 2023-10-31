@@ -17,6 +17,8 @@ export const TOAST_OPTIONS = {
 };
 
 export const BASE_IMG_URL = "https://image.tmdb.org/t/p/";
+export const BASE_IMG_FACE_URL =
+    "https://image.tmdb.org/t/p/w150_and_h150_face/";
 export const BACKDROP_IMG_SIZES = ["w300", "w780", "w1280", "original"];
 export const POSTER_IMG_SIZES = [
     "w92",

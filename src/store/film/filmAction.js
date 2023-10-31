@@ -86,6 +86,11 @@ export default {
                 this.isLoading = false;
             })
             .catch((error) => {
+                if (error.response.status === 404) {
+                    toast.error("Такого фільму не знайдено!");
+                    this.oneFilm = null;
+                    return;
+                }
                 toast.error("Сталася помилка отримання даних!");
                 console.log(error);
                 this.isLoading = false;
@@ -96,7 +101,6 @@ export default {
                 this.videos = res.data.results;
             })
             .catch((error) => {
-                toast.error("Сталася помилка отримання даних!");
                 console.log(error);
                 this.isLoading = false;
             });
