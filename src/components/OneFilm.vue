@@ -53,7 +53,7 @@
                         </v-btn>
                     </v-card-actions>
                 </template>
-                <Reviews />
+                <Reviews :id="id" />
                 <Modal v-if="showModal" @close="showModal = false">
                     <template v-slot:header>
                         <h3>{{ curentVideo.name }}</h3>
@@ -67,7 +67,7 @@
                     <template v-slot:footer="slotProps">
                         <div class="modal-footer">
                             <span class="me-1">{{ filmsStore.film.tagline }}</span>
-                            <button class="modal-default-button" @click="$emit('close')">
+                            <button class="modal-default-button" @click="() => showModal = false">
                                 {{ slotProps.btnCloseText }}
                             </button>
                         </div>
@@ -87,7 +87,7 @@ import { useFilmStore } from "../store/film/filmStore";
 import { useAuthStore } from '../store/authStore';
 import { useReviewsStore } from '../store/reviewsStore';
 import useComputed from '../mixins/useComputed';
-import { ref } from 'vue'
+import { isShallow, ref } from 'vue'
 
 export default {
 

@@ -1,8 +1,9 @@
 <template>
     <transition name="modal">
         <div class="modal-mask" @click="$emit('close')">
+
             <div class="modal-wrapper">
-                <div class="modal-container">
+                <div class="modal-container" @click.stop>
 
                     <div class="modal-header">
                         <slot name="header">
@@ -64,6 +65,7 @@
     display: flex;
     justify-content: center;
     margin: 20px 0;
+    max-height: calc(70vh);
 }
 
 .modal-default-button {

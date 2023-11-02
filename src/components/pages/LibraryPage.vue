@@ -13,7 +13,7 @@
 
 
 <script>
-import { useAuthStore } from "../../store/auth/authStore";
+import { useAuthStore } from "../../store/authStore";
 import { useFilmStore } from "../../store/film/filmStore"
 import { mapActions, } from "pinia"
 export default {

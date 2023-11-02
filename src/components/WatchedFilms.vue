@@ -11,7 +11,7 @@
 <script>
 import GridFilms from "./GridFilms.vue"
 import NoFilms from "./NoFilms.vue"
-import { useAuthStore } from "../store/auth/authStore"
+import { useAuthStore } from "../store/authStore"
 import { useFilmStore } from "../store/film/filmStore"
 import { mapState, mapActions } from "pinia"
 

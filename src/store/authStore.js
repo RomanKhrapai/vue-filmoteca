@@ -26,12 +26,14 @@ export const useAuthStore = defineStore("auth", {
         isAuthorized: false,
         oldPath: null,
         user: {
+            uid: null,
             name: null,
             email: null,
             library: [],
         },
     }),
     getters: {
+        uid: (state) => state.user.uid,
         name: (state) => state.user.name,
         path: (state) => state.oldPath,
         plannedFilms: (state) => {
@@ -92,6 +94,7 @@ export const useAuthStore = defineStore("auth", {
                 if (user) {
                     this.getLibrari();
                     this.isAuthorized = true;
+                    this.user.uid = user.uid;
                     this.user.name = user.displayName;
                     this.user.email = user.email;
                     if (user.displayName) {
