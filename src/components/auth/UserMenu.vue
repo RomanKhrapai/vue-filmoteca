@@ -1,6 +1,6 @@
 <template>
     <div class="menu-container">
-        <div class="menu-btn" @click="useLogOut()">
+        <div class="menu-btn" @click="useLogOut()" v-tooltip="'Вийти'">
             <v-icon size="large" :icon="'mdi-account'"></v-icon>
             {{ name }}
         </div>

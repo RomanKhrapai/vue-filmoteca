@@ -1,10 +1,12 @@
 <template>
     <div class="container" v-if="pages !== 1">
-        <button @click="prevPage"><v-icon icon="mdi-chevron-left-circle-outline" color="" size="50px"></v-icon></button>
+        <button v-tooltip="'Попередння сторінка'" @click="prevPage"><v-icon icon="mdi-chevron-left-circle-outline" color=""
+                size="50px"></v-icon></button>
         <input type="text" :value="page" @input="validation($event)">
-        <p>/</p>
-        <p class="pages">{{ pages }}</p>
-        <button @click="nextPage"><v-icon icon="mdi-chevron-right-circle-outline" color="" size="50px"></v-icon></button>
+        <p class="bg">/</p>
+        <p class="pages bg">{{ pages }}</p>
+        <button v-tooltip="'Наступна сторінка'" @click="nextPage"><v-icon icon="mdi-chevron-right-circle-outline" color=""
+                size="50px"></v-icon></button>
     </div>
 </template>
 <script>
@@ -45,6 +47,10 @@ export default {
     align-items: center;
 }
 
+.bg {
+    background-color: rgb(255, 255, 255);
+}
+
 p {
     height: 40px;
     display: flex;
@@ -64,6 +70,8 @@ button {
     width: 40px;
     justify-content: center;
     align-items: center;
+    margin-left: 10px;
+    margin-right: 10px;
 }
 
 .container {

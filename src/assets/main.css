@@ -10,6 +10,7 @@ body{
 .tooltip {
   position: relative;
 }
+
 .tooltip .tooltiptext {
   pointer-events: none;
   cursor: auto;
@@ -21,11 +22,28 @@ body{
   border: solid #4e4e4e;
   border-radius: 6px;
   padding: 3px 0;
-
   position: absolute;
-  top: 20%;
-  left: 20%;
+  transform: translate( 50%,-70%);
   z-index: 1;
+}
+/* .tooltip .tooltiptext-top{
+  top: 0%;
+  left:0%;
+  transform: translate( 50%,-70%);
+}
+
+  .tooltip .tooltiptext-bottom{ bottom: 20%;
+    left: 20%;} */
+
+.tooltip .tooltiptext::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 10%;
+  border-width: 8px;
+  border-style: solid;
+  border-color: #333 transparent transparent transparent;
+  transform: translateX(-50%);
 }
 
 .tooltip:hover .tooltiptext {

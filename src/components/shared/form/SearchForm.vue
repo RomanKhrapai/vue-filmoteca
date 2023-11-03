@@ -2,7 +2,7 @@
     <div class="form-box">
         <form class=form-name @submit.prevent="searchFilm">
             <input class=form-input v-model="inputValue" type=text autocomplete=off placeholder='Назва фільму' />
-            <button class=form-button aria-label=search type=submit>Пошук</button>
+            <button v-tooltip="'Шукати'" class=form-button aria-label=search type=submit>Пошук</button>
         </form>
         <span class="form-error" v-if="error">{{ error }}</span>
     </div>

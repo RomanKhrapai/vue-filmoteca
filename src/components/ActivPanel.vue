@@ -1,12 +1,12 @@
 <template>
     <div class="panel">
-        <v-btn icon size="large" @click="addFilmToLibrary(film, false)">
+        <v-btn icon size="large" @click="addFilmToLibrary(film, false)" v-tooltip="planned">
             <v-icon :color="activeColor(isPlanned)">mdi-bookmark-check-outline</v-icon>
         </v-btn>
-        <v-btn icon size="large" @click="addFilmToLibrary(film, true)">
+        <v-btn icon size="large" @click="addFilmToLibrary(film, true)" v-tooltip="favorite">
             <v-icon :color="activeColor(isFavorite)">mdi-heart</v-icon>
         </v-btn>
-        <v-btn icon size="large" @click="isDialogStar = true">
+        <v-btn icon size="large" @click="isDialogStar = true" v-tooltip="likeText">
             <v-icon :color="activeColor(rating)">mdi-star</v-icon>
         </v-btn>
         <div v-if="false">
@@ -66,6 +66,24 @@ export default {
         isFavorite() {
             return this.favoriteFilms.some(film => +film.id === +this.id)
         },
+        likeText() {
+            if (this.rating) {
+                return `Оцінено на ${this.rating}`
+            }
+            return "Оцінити"
+        },
+        favorite() {
+            if (this.isFavorite) {
+                return `В улюблених`
+            }
+            return "Додати в улюблені"
+        },
+        planned() {
+            if (this.isPlanned) {
+                return `В запланованих`
+            }
+            return "Додати в заплановані"
+        }
     },
     mounted() {
         this.rating = this.readRating

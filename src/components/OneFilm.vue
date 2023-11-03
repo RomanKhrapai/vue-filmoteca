@@ -2,9 +2,6 @@
     <div class="">
 
         <v-card v-if="filmsStore.film" class="mx-auto my-12">
-            <template v-slot:loader="{ isActive }">
-                <v-progress-linear :active="isActive" color="deep-purple" height="4" indeterminate></v-progress-linear>
-            </template>
             <div v-if="filmsStore.film">
                 <div class="film_box" :style="{ 'background-image': 'url(' + filmsStore.film.backdropUrl + ') ' }">
                     <div class="film_box-background">
@@ -19,14 +16,14 @@
 
                         </div>
                         <div class='film_info'>
-                            <v-card-item>
+                            <div class="box">
                                 <v-card-title>{{ filmsStore.film.title }}</v-card-title>
 
                                 <v-card-subtitle>
                                     <span class="me-1">{{ filmsStore.film.tagline }}</span>
                                 </v-card-subtitle>
                                 <ActivPanel v-if="userStore.isAuthorized" :id="id" :film="filmsStore.film" />
-                            </v-card-item>
+                            </div>
 
 
                             <v-card-text>
@@ -133,6 +130,10 @@ export default {
     padding: 5px;
     display: flex;
     justify-content: center;
+}
+
+.box {
+    padding: 5px;
 }
 
 .show-video__playr {

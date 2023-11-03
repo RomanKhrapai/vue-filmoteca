@@ -2,7 +2,7 @@
     <div v-if="reviewsItems || isAuthorized">
         <div class="reviews_header">
             <v-card-title>Коментарі</v-card-title>
-            <v-btn v-if="isAuthorized" size="small" icon @click="changeReview()">
+            <v-btn v-if="isAuthorized" size="small" icon @click="changeReview()" v-tooltip="'Додати коментар'">
                 <span class="mdi mdi-plus reviews_btn-text"></span>
             </v-btn>
         </div>
@@ -17,10 +17,12 @@
                 <div class=" reviews_body">
                     <div class="reviews_item-header">
                         <span class=" reviews_name">{{ item.author }}
-                            <v-btn v-if="isOwner(item?.uid)" variant="text" @click.stop="changeReview(i)">
+                            <v-btn v-if="isOwner(item?.uid)" variant="text" @click.stop="changeReview(i)"
+                                v-tooltip="'Змінити'">
                                 <span class="mdi mdi-fountain-pen-tip reviews_btn-text"></span>
                             </v-btn>
-                            <v-btn v-if="isOwner(item?.uid)" variant="text" @click.stop="removeReview(item.id, id)">
+                            <v-btn v-if="isOwner(item?.uid)" variant="text" @click.stop="removeReview(item.id, id)"
+                                v-tooltip="'Видалити'">
                                 <span class="mdi mdi-trash-can-outline reviews_btn-text"></span>
                             </v-btn>
                         </span>

@@ -1,9 +1,11 @@
 <template>
     <div class='toggle-switch'>
-        <label>
-            <input type='checkbox' :checked="modelValue" @click="$emit('update:modelValue', $event.target.checked)">
-            <span class='slider'></span>
-        </label>
+        <div> <label>
+                <input type='checkbox' :checked="modelValue" @click="$emit('update:modelValue', $event.target.checked)">
+                <span class='slider'></span>
+            </label>
+        </div>
+
     </div>
 </template>
   
