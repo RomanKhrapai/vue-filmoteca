@@ -30,7 +30,7 @@
 <style lang="scss" scoped>
 .modal-mask {
     position: fixed;
-    z-index: 9998;
+    z-index: 1000;
     top: 0;
     left: 0;
     width: 100%;
@@ -46,7 +46,8 @@
 }
 
 .modal-container {
-    width: 80vw;
+    width: 80%;
+    max-width: 950px;
     margin: 0px auto;
     padding: 20px 30px;
     background-color: #fff;

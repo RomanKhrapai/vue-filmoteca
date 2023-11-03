@@ -146,11 +146,10 @@ export default {
 .masck {
   position: absolute;
   height: 100%;
-  width: 200vw;
-  transform: translateX(-50%);
+  width: 100%;
   top: 0;
   left: 0;
-  z-index: 1000;
+  z-index: 1;
   pointer-events: none;
   background: linear-gradient(90deg, rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0.15))
 }
