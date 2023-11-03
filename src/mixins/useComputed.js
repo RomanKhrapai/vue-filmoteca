@@ -9,7 +9,7 @@ export default function useComputed(filmStore, reviewsStore) {
             (filmStore.film.rating * filmStore.film.count +
                 reviewsStore.rating) /
             (filmStore.film.count + 1)
-        ).toFixed(2);
+        ).toFixed(1);
     });
     const count = computed(() => {
         return reviewsStore.rating

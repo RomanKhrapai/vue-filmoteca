@@ -139,7 +139,8 @@ export default {
             return text;
         },
         isOwner(uid) {
-            return uid === this.uid
+            if (this.isAuthorized) { return uid === this.uid } return false
+
         },
 
     },

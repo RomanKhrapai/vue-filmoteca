@@ -160,6 +160,14 @@ export const useAuthStore = defineStore("auth", {
                 this.user.name = auth.currentUser.displayName;
                 this.email = auth.currentUser.email;
                 this.isLoading = false;
+                this.user.uid = auth.currentUser.uid;
+                // const washingtonRef = doc(
+                //     db,
+                //     `/films/rating/film_268`,
+                //     auth.currentUser.uid
+                // );
+                // await addDoc(washingtonRef, {});
+                // this.getReviews(id);
             } catch (error) {
                 const errorCode = error.code;
                 let atherError = true;

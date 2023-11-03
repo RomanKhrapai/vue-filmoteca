@@ -31,7 +31,7 @@ import {
     emailValidation, passwordValidation, isRequired, nameValidation,
 } from "../../../utils/validationRules";
 import MainTitle from "../../shared/MainTitle.vue";
-import { useAuthStore } from "../../../store/auth/authStore"
+import { useAuthStore } from "../../../store/authStore"
 import { mapActions, mapState } from "pinia"
 
 export default {
@@ -91,11 +91,8 @@ export default {
 
         async handleSubmit() {
             const { form } = this.$refs;
-            console.log(form.validate());
             const isFormValid = form.validate();
-            console.log(isFormValid);
             if (isFormValid) {
-                console.log("відправка даних на сервер");
                 this.registerUser({ name: this.name, email: this.email, password: this.password });
                 form.reset()
             }

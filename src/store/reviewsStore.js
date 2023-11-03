@@ -7,6 +7,7 @@ import {
     getDocs,
     deleteDoc,
     updateDoc,
+    setDoc,
     doc,
 } from "firebase/firestore";
 import { db } from "../fireBase";
@@ -164,7 +165,8 @@ export const useReviewsStore = defineStore("reviews", {
                     `/films/rating/film_268`,
                     authStore.user.uid
                 );
-                await updateDoc(washingtonRef, { [id]: value });
+                await setDoc(washingtonRef, { [id]: value }, { merge: true });
+                // await updateDoc(washingtonRef, { [id]: value });
                 this.getReviews(id);
             } catch (e) {
                 console.error("Error adding document: ", e);

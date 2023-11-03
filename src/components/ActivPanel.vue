@@ -79,8 +79,10 @@ export default {
                 query: { ...this.$router.query, page: this.page }
             })
         },
-        isAuthorized() {
-            this.getReviews(id)
+        isAuthorized(newVal) {
+
+            this.getReviews(this.id)
+
         }
     }
 }

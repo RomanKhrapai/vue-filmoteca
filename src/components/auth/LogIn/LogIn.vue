@@ -22,7 +22,7 @@ import {
     emailValidation, passwordValidation, isRequired,
 } from "../../../utils/validationRules";
 import MainTitle from "../../shared/MainTitle.vue";
-import { useAuthStore } from "../../../store/auth/authStore"
+import { useAuthStore } from "../../../store/authStore"
 import { mapActions, mapState } from "pinia"
 
 export default {

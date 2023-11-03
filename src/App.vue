@@ -1,7 +1,7 @@
 
 <template>
-  <div class="container-app" :style="{ backgroundColor: !isNightMode ? '#fff' : '#000000e0' }">
-    <div class="bg-heder">
+  <div class="container-app" :style="{ backgroundColor: isNightMode ? '#fff' : '#000000e0' }">
+    <div class="bg-header" :class="[!isNightMode ? 'bg-header-dark' : 'bg-header-white']">
       <div class="container heder-nav">
         <v-tabs v-model="tab" color="deep-purple-accent-4" align-tabs="start">
           <router-link to="/">
@@ -34,6 +34,7 @@
     <main class="container">
       <RouterView />
       <Loader v-if="isLoading" />
+      <div :class="{ masck: !isNightMode }"></div>
     </main>
     <TogleDayOrNight v-model="isNightMode" />
   </div>
@@ -120,12 +121,12 @@ export default {
 
 }
 
-.heder-nav {
-  background: #25252596;
+.header-nav {
+  background: #7e7d7d96;
 
 }
 
-.bg-heder {
+.bg-header {
   min-width: 320px;
   height: 170px;
   animation: show 2s;
@@ -140,9 +141,29 @@ export default {
     }
   }
 
+}
+
+.masck {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  pointer-events: none;
+  background: linear-gradient(90deg, rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0.15))
+}
+
+.bg-header-dark {
   background: linear-gradient(90deg, rgba(0, 0, 0, 0.515), rgba(0, 0, 0, 0.526)),
-  center / auto 100% no-repeat url('../src/assets/images/header.jpg'),
-  #000103;
+    center / auto 100% no-repeat url('../src/assets/images/header.jpg'),
+    #000103;
+}
+
+.bg-header-white {
+  background: linear-gradient(90deg, rgba(141, 110, 52, 0.215), rgba(154, 115, 31, 0.226)),
+    center / auto 100% no-repeat url('../src/assets/images/header.jpg'),
+    #888888;
 }
 
 .text-day-night {
