@@ -146,7 +146,8 @@ export default {
 .masck {
   position: absolute;
   height: 100%;
-  width: 100%;
+  width: 200vw;
+  transform: translateX(-50%);
   top: 0;
   left: 0;
   z-index: 1000;
