@@ -1,8 +1,8 @@
 <template>
     <div>
 
-        <GridFilms v-if="watchedFilms" :films="watchedFilms" />
-        <NoFilms v-if="watchedFilms.length === 0 && !isLoading" />
+        <GridFilms v-if="favoriteFilms" :films="favoriteFilms" />
+        <NoFilms v-if="favoriteFilms.length === 0 && !isLoading" />
 
     </div>
 </template>
@@ -20,7 +20,7 @@ export default {
     methods: { ...mapActions(useFilmStore, ['falseLoading']) },
 
     computed: {
-        ...mapState(useAuthStore, ['watchedFilms']),
+        ...mapState(useAuthStore, ['favoriteFilms']),
         ...mapState(useFilmStore, ['isLoading'])
     },
     mounted() {

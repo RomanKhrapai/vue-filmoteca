@@ -45,8 +45,8 @@ const routes = [
                 //alias: "",
             },
             {
-                path: "watched",
-                component: () => import("../components/WatchedFilms.vue"),
+                path: "favorite",
+                component: () => import("../components/FavoriteFilms.vue"),
             },
         ],
     },
@@ -96,7 +96,7 @@ router.beforeEach((to, from, next) => {
         next();
     } else if (
         !auth.isAuthorized &&
-        (to.path === "/library" || to.path === "/library/watched")
+        (to.path === "/library" || to.path === "/library/favorite")
     ) {
         auth.oldPath = to.path;
         next({ name: "home" });

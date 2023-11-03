@@ -1,13 +1,13 @@
 <template>
-    <div v-if="reviewsItems">
+    <div v-if="reviewsItems || isAuthorized">
         <div class="reviews_header">
-            <h3 class="reviews_title">Коментарі</h3>
+            <v-card-title>Коментарі</v-card-title>
             <v-btn v-if="isAuthorized" size="small" icon @click="changeReview()">
                 <span class="mdi mdi-plus reviews_btn-text"></span>
             </v-btn>
         </div>
 
-        <ul class="reviews_list">
+        <ul class="reviews_list" v-if="reviewsItems">
             <li v-for="item, i in partOrFullReviews" class=" reviews_item" @click="openDialog(i, 200)">
                 <div class=" reviews_foto-box">
                     <img v-if="item.avatar" class="reviews_foto" width="60" height="60" :src="item.avatar" alt="foto">
@@ -78,10 +78,10 @@
 <script>
 import Modal from './shared/Modal.vue';
 import { QuillEditor } from '@vueup/vue-quill'
-import '@vueup/vue-quill/dist/vue-quill.snow.css';
 import { useReviewsStore } from '../store/reviewsStore';
 import { useAuthStore } from '../store/authStore';
 import { mapState, mapActions } from 'pinia';
+import { useToast } from "vue-toastification";
 export default {
     props: ['id'],
     components: { Modal, QuillEditor },
@@ -122,11 +122,11 @@ export default {
             }
         },
         checkReview() {
+            const toast = useToast();
             if (this.content?.trim() === '') {
-                console.log(this);
-                this.$toast.success("I'm a toast!")
-                this.$toast("I'm a toast!");
-                this.$toast.warning("Поле вводу коментарів не може бути пустим!");
+                console.log("Поле вводу коментарів не може бути пустим!");
+                //  this.$toast.warning("Поле вводу коментарів не може бути пустим!");
+                toast.warning("Поле вводу коментарів не може бути пустим!");
                 return
             }
             this.saveReview(this.content, this.id, this.curentReview?.id)
@@ -147,7 +147,10 @@ export default {
         ...mapState(useReviewsStore, ["reviewsItems"]),
         ...mapState(useAuthStore, ["isAuthorized", "uid"]),
         isLengthReviewsEnough() {
-            return this.reviewsItems.length > 3
+            if (this.reviewsItems?.length) {
+                return this.reviewsItems.length > 3
+            }
+            return false
         },
         partOrFullReviews() {
             if (!this.isLengthReviewsEnough) {
@@ -169,7 +172,6 @@ export default {
 .reviews_header {
     display: flex;
     align-items: center;
-    padding: 0 20px 0 30px;
     margin-top: 20px;
 }
 

@@ -6,45 +6,54 @@
                 <v-progress-linear :active="isActive" color="deep-purple" height="4" indeterminate></v-progress-linear>
             </template>
             <div v-if="filmsStore.film">
-                <v-img v-if="filmsStore.film.backdropUrl" cover :src="filmsStore.film.backdropUrl"></v-img>
-                <v-img v-if="!filmsStore.film.backdropUrl" cover :src="'/src/assets/images/fix-backdrop.jpg'"></v-img>
-                <v-card-item>
-                    <v-card-title>{{ filmsStore.film.title }}</v-card-title>
+                <div class="film_box" :style="{ 'background-image': 'url(' + filmsStore.film.backdropUrl + ') ' }">
+                    <div class="film_box-background">
 
-                    <v-card-subtitle>
-                        <span class="me-1">{{ filmsStore.film.tagline }}</span>
-                    </v-card-subtitle>
-                </v-card-item>
+                        <div class="film_img-box">
+                            <div class="film_img">
+                                <v-img v-if="filmsStore.film.posterUrl" height="390" width="262" cover
+                                    :src="filmsStore.film.posterUrl"></v-img>
+                                <v-img v-if="!filmsStore.film.posterUrl" cover
+                                    :src="'/src/assets/images/fix-poster.jpg'"></v-img>
+                            </div>
 
-                <v-card-text>
-                    <v-row align="center" class="mx-0">
-                        <v-rating :model-value="filmsStore.film.rating" color="amber" density="compact" half-increments
-                            readonly size="large"></v-rating>
-
-                        <div class="text-grey ms-4">
-                            {{ filmsStore.film.rating }} ({{ filmsStore.film.count }})
                         </div>
-                    </v-row>
+                        <div class='film_info'>
+                            <v-card-item>
+                                <v-card-title>{{ filmsStore.film.title }}</v-card-title>
 
-                    <div class="my-4 text-subtitle-1">
-                        {{ filmsStore.film.genres }}
-                    </div>
-                    <div class="my-4 text-subtitle-1">
-                        Дата релізу: {{ filmsStore.film.releaseDate }}
-                    </div>
+                                <v-card-subtitle>
+                                    <span class="me-1">{{ filmsStore.film.tagline }}</span>
+                                </v-card-subtitle>
+                                <ActivPanel v-if="userStore.isAuthorized" :id="id" :film="filmsStore.film" />
+                            </v-card-item>
 
+
+                            <v-card-text>
+                                <v-row align="center" class="mx-0">
+                                    <v-rating :model-value="rating" color="amber" density="compact" half-increments readonly
+                                        size="large"></v-rating>
+
+                                    <div class=" ms-4">
+                                        {{ rating }} ({{ count }})
+                                    </div>
+                                </v-row>
+
+                                <div class="my-4 text-subtitle-1">
+                                    {{ filmsStore.film.genres }}
+                                </div>
+                                <div class="my-4 text-subtitle-1">
+                                    Дата релізу: {{ filmsStore.film.releaseDate }}
+                                </div>
+                            </v-card-text>
+                        </div>
+                    </div>
+                </div>
+                <v-card-title>Опис</v-card-title>
+                <v-card-text>
                     <div>{{ filmsStore.film.overview }} </div>
                 </v-card-text>
-                <div class="btn-box" v-if="userStore.isAuthorized">
-                    <v-btn v-if="isBeforWatchedFilm" @click="userStore.addFilmToLibrary(filmsStore.film, false,)">
-                        Додати до запланованих
-                    </v-btn>
-                    <v-btn v-if="isWatchedFilm" @click="userStore.addFilmToLibrary(filmsStore.film, true,)">
-                        Додати до переглянутих
-                    </v-btn>
-                </div>
 
-                <v-divider class="mx-4 mb-1"></v-divider>
                 <template v-if="filmsStore.film.videos">
                     <v-card-title>Дивитися</v-card-title>
                     <v-card-actions v-for="video, i in filmsStore.film.videos">
@@ -83,16 +92,18 @@
 import Modal from './shared/Modal.vue';
 import NoFilm from './NoFilm.vue';
 import Reviews from './Reviews.vue'
+import ActivPanel from './ActivPanel.vue';
 import { useFilmStore } from "../store/film/filmStore";
 import { useAuthStore } from '../store/authStore';
 import { useReviewsStore } from '../store/reviewsStore';
 import useComputed from '../mixins/useComputed';
-import { isShallow, ref } from 'vue'
+import { ref } from 'vue'
+
 
 export default {
 
     props: ['id'],
-    components: { Modal, NoFilm, Reviews },
+    components: { Modal, NoFilm, Reviews, ActivPanel },
     setup(props) {
         const { id } = (props);
         const userStore = useAuthStore();
@@ -101,7 +112,7 @@ export default {
         const showModal = ref(false);
         const curentVideo = ref(null);
 
-        const { isWatchedFilm, isBeforWatchedFilm } = useComputed(id, userStore)
+        const { rating, count } = useComputed(filmsStore, reviewsStore)
         const showVideo = (index) => {
             curentVideo.value = filmsStore.film.videos[index];
             showModal.value = true;
@@ -110,7 +121,7 @@ export default {
         filmsStore.getFilm(id);
         reviewsStore.getReviews(id);
 
-        return { filmsStore, userStore, showModal, curentVideo, showVideo, isWatchedFilm, isBeforWatchedFilm }
+        return { filmsStore, userStore, showModal, curentVideo, showVideo, rating, count }
     },
 
 
@@ -132,5 +143,31 @@ export default {
 .modal-footer {
     display: flex;
     justify-content: space-around;
+}
+
+.film_box {
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+.film_box-background {
+    background-image: linear-gradient(to right, rgba(220.5, 220.5, 220.5, 1) calc((50vw - 170px) - 340px), rgba(220.5, 220.5, 220.5, 0.44) 50%, rgba(220.5, 220.5, 220.5, 0.84) 100%);
+    display: flex;
+    align-items: flex-end;
+}
+
+.film_img-box {
+    padding: 15px;
+
+}
+
+.film_img {
+    box-shadow: 0px 2px 4px -1px rgba(0, 0, 0, 0.2), 0px 4px 5px 0px rgba(0, 0, 0, 0.14), 0px 1px 10px 0px rgba(0, 0, 0, 0.12);
+}
+
+.film_info {
+    border-radius: 30px 30px 0 0;
+    background-image: linear-gradient(to right, rgba(220.5, 220.5, 220.5, 1) 0, rgba(220.5, 220.5, 220.5, 0.44) 50%, rgba(220.5, 220.5, 220.5, 0.84) 100%);
+    box-shadow: 0px -14px 32px 3px rgba(220.5, 220.5, 220.5, 1), 0px 0px 0px -4px rgba(220.5, 220.5, 220.5, 1)
 }
 </style>

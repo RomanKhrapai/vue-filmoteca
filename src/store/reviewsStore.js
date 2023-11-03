@@ -3,6 +3,7 @@ import { BASE_IMG_FACE_URL } from "../constants";
 import {
     collection,
     addDoc,
+    getDoc,
     getDocs,
     deleteDoc,
     updateDoc,
@@ -20,8 +21,10 @@ const authStore = useAuthStore();
 export const useReviewsStore = defineStore("reviews", {
     state: () => ({
         reviews: [],
+        rating: 2,
     }),
     getters: {
+        readRating: (state) => state.rating,
         reviewsItems: (state) => {
             if (state.reviews.length === 0) {
                 return null;
@@ -85,15 +88,14 @@ export const useReviewsStore = defineStore("reviews", {
             }
         },
         async getReviews(id) {
+            this.getRating(id);
             try {
                 this.reviews = [];
                 const res = await axiosInstance.get(`/movie/${id}/reviews`);
                 if (!res?.data?.results) {
                     throw "Помилка завантаження Коментарів";
                 }
-                if (res.data.results.length === 0) {
-                    throw "Коментарі відсутні";
-                }
+
                 this.reviews = res.data.results.map((review) => ({
                     ...review,
                     content: textToHtml(review.content),
@@ -128,6 +130,44 @@ export const useReviewsStore = defineStore("reviews", {
                 );
             } catch (e) {
                 console.error("Error get DB reviews: ", e);
+            }
+        },
+        async getRating(id) {
+            this.rating = 0;
+            if (!authStore.isAuthorized) {
+                return;
+            }
+            try {
+                const docRef = doc(
+                    db,
+                    `/films/rating/film_268`,
+                    authStore.user.uid
+                );
+                const docSnap = await getDoc(docRef);
+
+                if (docSnap.exists()) {
+                    this.rating = +docSnap.data()[id] || 0;
+                } else {
+                    this.rating = 0;
+                }
+            } catch (e) {
+                console.error("Error get DB reviews: ", e);
+            }
+        },
+        async saveRating(id, value) {
+            if (!id) {
+                return;
+            }
+            try {
+                const washingtonRef = doc(
+                    db,
+                    `/films/rating/film_268`,
+                    authStore.user.uid
+                );
+                await updateDoc(washingtonRef, { [id]: value });
+                this.getReviews(id);
+            } catch (e) {
+                console.error("Error adding document: ", e);
             }
         },
     },

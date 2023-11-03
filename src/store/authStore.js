@@ -39,7 +39,7 @@ export const useAuthStore = defineStore("auth", {
         plannedFilms: (state) => {
             return state.user.library.filter((film) => !film.isWatched);
         },
-        watchedFilms: (state) =>
+        favoriteFilms: (state) =>
             state.user.library.filter((film) => film.isWatched),
     },
     actions: {

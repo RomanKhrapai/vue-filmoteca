@@ -3,8 +3,8 @@
         <v-btn @click="redirectTo('/library')">
             Заплановані
         </v-btn>
-        <v-btn @click="redirectTo('/library/watched')">
-            Переглянуті
+        <v-btn @click="redirectTo('/library/favorite')">
+            Улюблені
         </v-btn>
         <router-view></router-view>
 
