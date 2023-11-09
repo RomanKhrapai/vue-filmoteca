@@ -7,13 +7,13 @@
 
     </div>
 </template>
+
 <script setup>
 import { useFilmStore } from "../../store/filmStore"
 import GridFilms from "../GridFilms.vue"
 import Pagination from "../Pagination.vue"
 import NoFilms from "../NoFilms.vue"
 import { debounce } from "../../utils/debounce"
-
 import { watch, onMounted } from 'vue'
 import { storeToRefs } from "pinia"
 
@@ -29,11 +29,5 @@ onMounted(() => { getNewsFilms() })
 watch(page, () => { debounce(() => { getNewsFilms() }) })
 watch(isLoading, () => { getNewsFilms() })
 
-
-
 </script>
-  
-<style scoped>
-.full-box {}
-</style>
   
