@@ -153,12 +153,13 @@ export const useAuthStore = defineStore("auth", () => {
                 displayName: name,
             });
             auth.value.isAuthorized = true;
-            auth.value.user.name = auth.currentUser.displayName;
-            auth.value.email = auth.currentUser.email;
+            auth.value.user.name = authFB.currentUser.displayName;
+            auth.value.email = authFB.currentUser.email;
             auth.value.isLoading = false;
-            auth.value.user.uid = auth.currentUser.uid;
+            auth.value.user.uid = authFB.currentUser.uid;
         } catch (error) {
             const errorCode = error.code;
+            console.error(error);
             let atherError = true;
 
             switch (errorCode) {
