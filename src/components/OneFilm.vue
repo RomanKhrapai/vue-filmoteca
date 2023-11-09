@@ -46,7 +46,7 @@ getReviews(id);
                             <div class="film_img">
                                 <v-img v-if="oneFilm.posterUrl" height="390" width="262" cover
                                     :src="oneFilm.posterUrl"></v-img>
-                                <v-img v-if="!oneFilm.posterUrl" cover :src="'/src/assets/images/fix-poster.jpg'"></v-img>
+                                <v-img v-if="!oneFilm.posterUrl" cover :src="'./src/assets/images/fix-poster.jpg'"></v-img>
                             </div>
 
                         </div>

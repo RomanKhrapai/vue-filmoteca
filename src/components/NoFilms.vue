@@ -2,7 +2,7 @@
     <div class="box-content">
         <v-card class="mx-auto my-12">
             <div class="box">
-                <v-img :width="500" :src="'/src/assets/images/camera.jpg'">
+                <v-img :width="500" :src="'./src/assets/images/camera.jpg'">
                 </v-img>
             </div>
 
