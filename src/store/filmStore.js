@@ -240,7 +240,7 @@ export const useFilmStore = defineStore("film", () => {
     function clearStore() {
         film.value.film = null;
         film.value.filmsState = [];
-        film.value.totalPages = 1;
+        film.value.totalPages = null;
     }
     return {
         film,
