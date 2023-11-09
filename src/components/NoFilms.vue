@@ -2,13 +2,9 @@
     <div class="box-content">
         <v-card class="mx-auto my-12">
             <div class="box">
-                <v-img :width="500" :src="'@/assets/images/camera.jpg'">
-                </v-img>
+                <img src="/src/assets/images/camera.jpg" alt="Фільми відсутні">
             </div>
-
-            <h2>
-                ФІЛЬМІВ НЕ ЗНАЙДЕНО
-            </h2>
+            <h2> ФІЛЬМІВ НЕ ЗНАЙДЕНО </h2>
         </v-card>
     </div>
 </template>
