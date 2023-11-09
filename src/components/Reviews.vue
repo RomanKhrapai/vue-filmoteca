@@ -95,7 +95,7 @@ const partOrFullReviews = computed(() => {
                 <div class=" reviews_foto-box">
                     <img v-if="item.avatar" class="reviews_foto" width="60" height="60" :src="item.avatar" alt="foto">
                     <img v-if="!item.avatar" class="reviews_foto" width="60" height="60"
-                        src="@/assets/images/avatar_img.jpg" alt="foto">
+                        src="/src/assets/images/avatar_img.jpg" alt="foto">
                 </div>
                 <div class=" reviews_body">
                     <div class="reviews_item-header">
