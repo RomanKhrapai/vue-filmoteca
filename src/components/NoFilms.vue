@@ -23,6 +23,6 @@ h2 {
 .box {
     display: flex;
     height: calc(100vh - 300px);
-    /* padding: 50px; */
+    justify-content: center;
 }
 </style>
