@@ -17,7 +17,7 @@ const genres = useGenreStore();
 const router = useRouter();
 const route = useRoute();
 
-const isNightMode = ref(false)
+const isNightMode = ref(null)
 const tab = ref(null)
 
 
@@ -35,18 +35,15 @@ watch(isAuthorized, (newVal) => {
     auth.clearPath();
   }
 })
-watch(isNightMode, (val) => {
-  localStorage.setItem("isNight", val);
-})
+watch(isNightMode, (val) => localStorage.setItem("isNight", val))
 
 onBeforeMount(() => {
-  const isNight = localStorage.getItem("isNight")
+  const isNight = JSON.parse(localStorage.getItem("isNight"))
 
   const hasDarkPreference = window.matchMedia(
     "(prefers-color-scheme: dark)"
   ).matches;
-
-  isNightMode.value = isNight === null ? !hasDarkPreference : !!isNight
+  isNightMode.value = isNight === null ? !hasDarkPreference : isNight
 })
 
 genres.getgenres();
