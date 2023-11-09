@@ -4,42 +4,40 @@
     </form>
 </template>
   
-<script>
-export default {
-    name: 'FormApp',
-    provide() {
-        return {
-            form: this,
-        };
-    },
-    data() {
-        return {
-            inputs: [],
-        };
-    },
-    methods: {
-        registerInput(input) {
-            this.inputs.push(input);
-        },
-        unRegisterInput(input) {
-            this.inputs.filter((item) => item !== input);
-        },
-        validate() {
+<script setup >
+import { provide, ref, onUnmounted } from 'vue';
 
-            return this.inputs.reduce((isValid, input) => {
-                const isInputValid = input.validate();
+provide('form', { registerInput, unRegisterInput })
 
-                return isValid && !isInputValid;
-            }, true);
-        },
-        reset() {
-            this.inputs.forEach((input) => input.reset());
-        },
-    },
-    unmounted() {
-        this.unRegisterInput()
-    }
-};
+
+const inputs = ref([])
+
+defineExpose({
+    validate,
+    reset
+})
+
+function registerInput(input) {
+    inputs.value.push(input);
+}
+
+function unRegisterInput(input) {
+    inputs.value.filter((item) => item !== input);
+}
+
+function validate() {
+    return inputs.value.reduce((isValid, input) => {
+
+        const isInputValid = input.validate();
+        return isValid && isInputValid;
+    }, true);
+}
+
+function reset() {
+    inputs.value.forEach((input) => input.reset());
+}
+
+onUnmounted(() => unRegisterInput())
 </script>
   
 <style lang="scss" scoped></style>

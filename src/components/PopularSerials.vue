@@ -1,43 +1,32 @@
 <template>
     <div>
         <GridFilms v-if="films" :films="films">
-
         </GridFilms>
         <Pagination />
     </div>
 </template>
 
 
-<script>
+<script setup>
 import GridFilms from "./GridFilms.vue";
 import Pagination from "./Pagination.vue";
-import { useFilmStore } from "../store/film/filmStore"
-import { useGenreStore } from "../store/genresStore"
-import { mapActions, mapState } from "pinia"
+import { useFilmStore } from "../store/filmStore"
+import { storeToRefs } from "pinia"
 import { debounce } from "../utils/debounce"
+import { watch, onMounted } from 'vue'
 
+const film = useFilmStore();
 
-export default {
-    components: { GridFilms, Pagination },
+const { page, films } = storeToRefs(film);
 
+watch(page, () => {
+    debounce(() => { film.getpopularSerials(); })
+})
 
-    methods: {
-        ...mapActions(useFilmStore, ["getpopularSerials"]),
-    },
-    computed: {
-        ...mapState(useFilmStore, ['page', 'films',]),
-        ...mapState(useGenreStore, { ganresOption: 'genreItems' })
+onMounted(() => {
+    film.getpopularSerials();
+})
 
-    },
-    watch: {
-        page() {
-            debounce(() => { this.getpopularSerials(this.selectedGanres); })
-        }
-    },
-    mounted() {
-        this.getpopularSerials(this.selectedGanres);
-    }
-}
 </script>
   
 <style scoped></style>

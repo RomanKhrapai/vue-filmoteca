@@ -1,20 +1,18 @@
 import { computed } from "vue";
 
-export default function useComputed(filmStore, reviewsStore) {
-    const rating = computed(() => {
-        if (!reviewsStore.rating) {
-            return filmStore.film.rating;
+export default function useComputed(film, rating) {
+    const newRating = computed(() => {
+        if (!rating.value) {
+            return film.value.rating;
         }
         return (
-            (filmStore.film.rating * filmStore.film.count +
-                reviewsStore.rating) /
-            (filmStore.film.count + 1)
+            (film.value.rating * film.value.count + rating.value) /
+            (film.value.count + 1)
         ).toFixed(1);
     });
     const count = computed(() => {
-        return reviewsStore.rating
-            ? filmStore.film.count + 1
-            : filmStore.film.count;
+        return rating.value ? film.value.count + 1 : film.value.count;
     });
-    return { rating, count };
+
+    return { rating: newRating, count };
 }

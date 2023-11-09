@@ -1,28 +1,63 @@
+<script setup>
+import Modal from './shared/Modal.vue';
+import NoFilm from './NoFilm.vue';
+import Reviews from './Reviews.vue'
+import ActivPanel from './ActivPanel.vue';
+import { useFilmStore } from "../store/filmStore";
+import { useAuthStore } from '../store/authStore';
+import { useReviewsStore } from '../store/reviewsStore';
+import useComputed from '../mixins/useComputed';
+import { ref, defineProps } from 'vue'
+import { storeToRefs } from 'pinia';
+
+
+const { id } = defineProps({
+    id: String,
+});
+
+const { isAuthorized } = storeToRefs(useAuthStore());
+const { getFilm } = useFilmStore();
+const { oneFilm, isLoading } = storeToRefs(useFilmStore())
+const { getReviews } = useReviewsStore();
+const { readRating } = storeToRefs(useReviewsStore())
+const showModal = ref(false);
+const curentVideo = ref(null);
+
+const { rating, count } = useComputed(oneFilm, readRating)
+const showVideo = (index) => {
+    curentVideo.value = oneFilm.videos[index];
+    showModal.value = true;
+}
+
+getFilm(id);
+getReviews(id);
+
+</script>
+
 <template>
     <div class="">
 
-        <v-card v-if="filmsStore.film" class="mx-auto my-12">
-            <div v-if="filmsStore.film">
-                <div class="film_box" :style="{ 'background-image': 'url(' + filmsStore.film.backdropUrl + ') ' }">
+        <v-card v-if="oneFilm" class="mx-auto my-12">
+            <div v-if="oneFilm">
+                <div class="film_box" :style="{ 'background-image': 'url(' + oneFilm.backdropUrl + ') ' }">
                     <div class="film_box-background">
 
                         <div class="film_img-box">
                             <div class="film_img">
-                                <v-img v-if="filmsStore.film.posterUrl" height="390" width="262" cover
-                                    :src="filmsStore.film.posterUrl"></v-img>
-                                <v-img v-if="!filmsStore.film.posterUrl" cover
-                                    :src="'/src/assets/images/fix-poster.jpg'"></v-img>
+                                <v-img v-if="oneFilm.posterUrl" height="390" width="262" cover
+                                    :src="oneFilm.posterUrl"></v-img>
+                                <v-img v-if="!oneFilm.posterUrl" cover :src="'/src/assets/images/fix-poster.jpg'"></v-img>
                             </div>
 
                         </div>
                         <div class='film_info'>
                             <div class="box">
-                                <v-card-title>{{ filmsStore.film.title }}</v-card-title>
+                                <v-card-title>{{ oneFilm.title }}</v-card-title>
 
                                 <v-card-subtitle>
-                                    <span class="me-1">{{ filmsStore.film.tagline }}</span>
+                                    <span class="me-1">{{ oneFilm.tagline }}</span>
                                 </v-card-subtitle>
-                                <ActivPanel v-if="userStore.isAuthorized" :id="id" :film="filmsStore.film" />
+                                <ActivPanel v-if="isAuthorized && !isLoading" :id="id" :film="oneFilm" />
                             </div>
 
 
@@ -37,10 +72,10 @@
                                 </v-row>
 
                                 <div class="my-4 text-subtitle-1">
-                                    {{ filmsStore.film.genres }}
+                                    {{ oneFilm.genres }}
                                 </div>
                                 <div class="my-4 text-subtitle-1">
-                                    Дата релізу: {{ filmsStore.film.releaseDate }}
+                                    Дата релізу: {{ oneFilm.releaseDate }}
                                 </div>
                             </v-card-text>
                         </div>
@@ -48,18 +83,18 @@
                 </div>
                 <v-card-title>Опис</v-card-title>
                 <v-card-text>
-                    <div>{{ filmsStore.film.overview }} </div>
+                    <div>{{ oneFilm.overview }} </div>
                 </v-card-text>
 
-                <template v-if="filmsStore.film.videos">
+                <template v-if="oneFilm.videos">
                     <v-card-title>Дивитися</v-card-title>
-                    <v-card-actions v-for="video, i in filmsStore.film.videos">
+                    <v-card-actions v-for="video, i in oneFilm.videos">
                         <v-btn color="deep-purple-lighten-2" variant="text" @click="showVideo(i)">
                             {{ video.name }}
                         </v-btn>
                     </v-card-actions>
                 </template>
-                <Reviews :id="id" />
+                <Reviews :id="+id" />
                 <Modal v-if="showModal" @close="showModal = false">
                     <template v-slot:header>
                         <h3>{{ curentVideo.name }}</h3>
@@ -72,7 +107,7 @@
                     </template>
                     <template v-slot:footer="slotProps">
                         <div class="modal-footer">
-                            <span class="me-1">{{ filmsStore.film.tagline }}</span>
+                            <span class="me-1">{{ oneFilm.tagline }}</span>
                             <button class="modal-default-button" @click="() => showModal = false">
                                 {{ slotProps.btnCloseText }}
                             </button>
@@ -82,48 +117,10 @@
                 </Modal>
             </div>
         </v-card>
-        <NoFilm v-if="!filmsStore.film" />
+        <NoFilm v-if="!oneFilm" />
     </div>
 </template>
-<script>
-import Modal from './shared/Modal.vue';
-import NoFilm from './NoFilm.vue';
-import Reviews from './Reviews.vue'
-import ActivPanel from './ActivPanel.vue';
-import { useFilmStore } from "../store/film/filmStore";
-import { useAuthStore } from '../store/authStore';
-import { useReviewsStore } from '../store/reviewsStore';
-import useComputed from '../mixins/useComputed';
-import { ref } from 'vue'
 
-
-export default {
-
-    props: ['id'],
-    components: { Modal, NoFilm, Reviews, ActivPanel },
-    setup(props) {
-        const { id } = (props);
-        const userStore = useAuthStore();
-        const filmsStore = useFilmStore();
-        const reviewsStore = useReviewsStore();
-        const showModal = ref(false);
-        const curentVideo = ref(null);
-
-        const { rating, count } = useComputed(filmsStore, reviewsStore)
-        const showVideo = (index) => {
-            curentVideo.value = filmsStore.film.videos[index];
-            showModal.value = true;
-        }
-
-        filmsStore.getFilm(id);
-        reviewsStore.getReviews(id);
-
-        return { filmsStore, userStore, showModal, curentVideo, showVideo, rating, count }
-    },
-
-
-}
-</script>
     
 <style scoped>
 .btn-box {

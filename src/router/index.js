@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
 import { useAuthStore } from "../store/authStore";
-import { useFilmStore } from "../store/film/filmStore";
+import { useFilmStore } from "../store/filmStore";
 import NotFound from "../components/pages/NotFoundPage.vue";
 
 const routes = [
@@ -77,17 +77,21 @@ const router = createRouter({
     routes,
 });
 
-router.beforeEach((to, from, next) => {
-    const store = useFilmStore();
-    store.isLoading = true;
+function query(store) {
     if (to.path === from.path || !from.meta?.id) {
         const search = to.query?.search;
-        store.searchText = search ? search : null;
-        store.curentPage = to.query?.page ? +to.query.page : 1;
+        store.setSearch(search ? search : null);
+        store.setPage(to.query?.page ? to.query.page : 1);
     } else {
-        store.curentPage = 1;
-        store.searchText = null;
+        store.setPage(1);
+        store.setSearch(null);
     }
+}
+
+router.beforeEach((to, from, next) => {
+    console.log(to);
+    const store = useFilmStore();
+    store.startFetch();
 
     const auth = useAuthStore();
     const authStatus = to.matched.find((record) => record.meta.auth)?.meta
@@ -98,11 +102,13 @@ router.beforeEach((to, from, next) => {
         !auth.isAuthorized &&
         (to.path === "/library" || to.path === "/library/favorite")
     ) {
-        auth.oldPath = to.path;
+        auth.setPath(to.path);
         next({ name: "home" });
     } else if (!auth.isAuthorized && authStatus === "guest") {
+        query(store);
         next();
     } else if (auth.isAuthorized && authStatus === "user") {
+        query(store);
         next();
     } else next({ name: "NotFound" });
 });

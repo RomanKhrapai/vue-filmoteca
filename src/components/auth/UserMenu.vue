@@ -7,29 +7,24 @@
     </div>
 </template>
   
-<script>
+<script setup>
 import { useAuthStore } from "../../store/authStore"
-import { mapActions, mapState } from "pinia"
+import { storeToRefs } from "pinia"
+import { useRoute, useRouter } from 'vue-router'
 
-export default {
-    name: 'UserMenu',
+const route = useRoute()
+const router = useRouter()
+const { name } = storeToRefs(useAuthStore())
+const { logOut } = useAuthStore()
 
-    computed: {
-        ...mapState(useAuthStore, ['name']),
+function useLogOut() {
 
-    },
-    methods: {
-        ...mapActions(useAuthStore, ['logOut']),
-        useLogOut() {
+    logOut();
+    if (route.meta?.auth === 'user') {
+        router.push({ name: 'home' })
+    }
+}
 
-            this.logOut();
-            if (this.$route.meta?.auth === 'user') {
-                this.$router.push({ name: 'home' })
-            }
-        }
-    },
-
-};
 </script>
   
 <style lang="scss" scoped>

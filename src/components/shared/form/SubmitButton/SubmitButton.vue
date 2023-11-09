@@ -4,29 +4,21 @@
     </button>
 </template>
   
-<script>
-
-export default {
-    name: 'SubmitButton',
-    components: {
-
+<script setup>
+const props = defineProps({
+    type: {
+        type: String,
+        default: 'button',
     },
-    props: {
-        type: {
-            type: String,
-            default: 'button',
-        },
-        outlined: {
-            type: Boolean,
-            default: false,
-        },
-        loading: {
-            type: Boolean,
-            default: false,
-        },
+    outlined: {
+        type: Boolean,
+        default: false,
     },
-
-};
+    loading: {
+        type: Boolean,
+        default: false,
+    },
+})
 </script>
     
 <style lang="scss" scoped>

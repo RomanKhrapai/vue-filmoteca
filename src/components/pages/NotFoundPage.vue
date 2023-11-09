@@ -3,20 +3,13 @@
         <h1>404 Такої сторінки не існує</h1>
     </div>
 </template>
-<script>
-import { mapActions } from "pinia";
-import { useFilmStore } from "../../store/film/filmStore";
+<script setup>
+import { onMounted } from "vue";
+import { useFilmStore } from "../../store/filmStore";
 
-export default {
+const { falseLoading } = useFilmStore()
 
-    methods: {
-        ...mapActions(useFilmStore, ['falseLoading'])
-    },
-    mounted() {
-        this.falseLoading()
-    }
-}
-
+onMounted(() => falseLoading())
 
 </script>
   

@@ -7,34 +7,30 @@
         </v-col>
     </v-row>
 </template>
-<script>
+<script setup>
 import CardFilm from "./CardFilm.vue"
-// import { useFilmStore } from "../../src/store/film/filmStore"
-// import { mapState } from "pinia"
+import { useRouter, useRoute } from 'vue-router'
+import { computed } from 'vue'
+const route = useRoute()
+const router = useRouter()
 
-export default {
-    components: { CardFilm },
-    props: ['films'],
-    methods: {
-        redirectTo(id) {
-            if (this.$route.path === "/films/serials") {
-                return
-            }
-            this.$router.push({
-                name: 'filmById',
-                params: {
-                    id: id,
-                }
-            })
-        },
-    },
-    computed: {
-        //  ...mapState(useFilmStore, ['films']),
-        textTooltip() {
-            return this.$route.path === "/films/serials" ? "Серіал не містить деталей" : "Натисніть щоб відкрити деталі"
-        }
+const { films } = defineProps(['films'])
+
+function redirectTo(id) {
+    if (route.path === "/films/serials") {
+        return
     }
+    router.push({
+        name: 'filmById',
+        params: {
+            id
+        }
+    })
 }
+const textTooltip = computed(() => route.path === "/films/serials" ?
+    "Серіал не містить деталей" : "Натисніть щоб відкрити деталі")
+
+
 </script>
   
 <style scoped></style>

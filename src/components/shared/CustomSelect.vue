@@ -8,40 +8,35 @@
         </select></label>
 </template>
   
-<script>
-export default {
-    name: "CustomSelect",
-    props: {
-        defaultOption: {
-            type: Object,
-            required: false,
-            default: null,
-            validator: function (value) {
-                return value && typeof value.name === 'string' && typeof value.value === 'string';
-            }
-        },
-        label: {
-            type: String,
-            required: false,
-            default: '',
-        },
-        options: {
-            type: Array,
-            required: true,
-        },
-        modelValue: {
-            type: String,
-            default: "",
-        },
-    },
-
-    methods: {
-        selectedOption(e) {
-            this.$emit("update:modelValue", e.target.value);
+<script setup>
+const emit = defineEmits(['update:modelValue'])
+const { defaultOption, label, options, modelValue } = defineProps({
+    defaultOption: {
+        type: Object,
+        required: false,
+        default: null,
+        validator: function (value) {
+            return value && typeof value.name === 'string' && typeof value.value === 'string';
         }
     },
+    label: {
+        type: String,
+        required: false,
+        default: '',
+    },
+    options: {
+        type: Array,
+        required: true,
+    },
+    modelValue: {
+        type: String,
+        default: "",
+    },
+})
 
-};
+function selectedOption(e) {
+    emit("update:modelValue", e.target.value);
+}
 </script>
   
 <style lang="scss" scoped>

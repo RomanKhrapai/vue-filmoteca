@@ -1,101 +1,82 @@
 <template>
     <label class="custom-label " :class="[labelClass]"> {{ label }}
-        <input v-on="listeners" v-bind="$attrs" @blur="blurHandler" :checked="modelValue" class="custom-input"
+        <input v-on="listeners" v-bind="attrs" @blur="blurHandler" :checked="form.modelValue" class="custom-input"
             :class="!isValid && 'custom-input--error'" />
         <span v-if="!isValid" class="custom-input__error">{{ error }}</span>
     </label>
 </template>
   
-<script>
-export default {
-    name: "CustomCheckBox",
-    data() {
-        return {
-            isValid: true,
-            error: "",
-            isFirstInput: true,
-        };
+<script setup>
+import { ref, inject, computed, watch, onBeforeMount, onMounted, useAttrs } from "vue"
+const attrs = useAttrs()
+const emit = defineEmits(['update:modelValue', 'input'])
+
+const isValid = ref(true);
+const error = ref("")
+const isFirstInput = ref(true)
+
+const form = inject('form', null);
+
+const { labelClass, label, errorMessage, rules } = defineProps({
+    labelClass: {
+        type: String,
+        default: "",
     },
-    inject: {
-        form: {
-            default: null,
+    label: {
+        type: String,
+        default: "",
+    },
+    modelValue: {
+        type: Boolean,
+        default: false,
+    },
+    errorMessage: {
+        type: String,
+        default: "",
+    },
+    rules: {
+        type: Array,
+        default: () => [],
+    },
+
+});
+
+const listeners = computed(() => ({
+    ...attrs,
+    input: (event) => { emit("update:modelValue", event.target.checked); },
+}))
+onMounted(() => {
+    if (!form) return;
+    form.registerInput({ reset, validate });
+})
+onBeforeMount(() => {
+    if (!form) return;
+    form.unRegisterInput({ reset, validate });
+})
+
+function validate() {
+    isValid.value = rules.every((rule) => {
+        const ruleResult = rule(form.modelValue);
+        const hasPassed = !ruleResult
+        if (!hasPassed) {
+            error.value = ruleResult || errorMessage;
         }
-    },
-    inheritAttrs: false,
-    props: {
-        labelClass: {
-            type: String,
-            default: "",
-        },
-        label: {
-            type: String,
-            default: "",
-        },
-        modelValue: {
-            type: Boolean,
-            default: false,
-        },
-        errorMessage: {
-            type: String,
-            default: "",
-        },
-        rules: {
-            type: Array,
-            default: () => [],
-        },
-    },
-    computed: {
-        listeners() {
-
-            return {
-                ...this.$attrs,
-                input: (event) => { this.$emit("update:modelValue", event.target.checked); },
-            };
-        },
-    },
-    watch: {
-        value() {
-            if (this.isFirstInput) return;
-
-            this.validate();
-        },
-    },
-
-    mounted() {
-        if (!this.form) return;
-        this.form.registerInput(this);
-    },
-    beforeUnmount() {
-        if (!this.form) return;
-        this.form.unRegisterInput(this);
-    },
-    methods: {
-        validate() {
-            this.isValid = this.rules.every((rule) => {
-                const ruleResult = rule(this.modelValue);
-
-                const hasPassed = !ruleResult
-
-                if (!hasPassed) {
-                    this.error = ruleResult || this.errorMessage;
-                }
-                return hasPassed;
-            });
-        },
-        blurHandler() {
-            this.validate();
-            if (this.isFirstInput) {
-                this.validate();
-            }
-            this.isFirstInput = false;
-        },
-        reset() {
-            this.isFirstInput = true;
-            this.isValid = true;
-            this.$emit("input", "");
-        },
-    },
-};
+        return hasPassed
+    });
+    return isValid.value
+}
+function blurHandler() {
+    validate();
+    if (isFirstInput.value) {
+        validate();
+    }
+    isFirstInput.value = false;
+}
+function reset() {
+    isFirstInput.value = true;
+    isValid.value = true;
+    emit("input", "");
+}
 </script>
   
 <style lang="scss" scoped>

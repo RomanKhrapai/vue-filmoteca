@@ -3,13 +3,7 @@
         <slot></slot>
     </div>
 </template>
-  
-<script>
-export default {
-    name: 'AuthContainer',
-};
-</script>
-  
+    
 <style lang="scss" scoped>
 .auth-container {
     padding: 30px;

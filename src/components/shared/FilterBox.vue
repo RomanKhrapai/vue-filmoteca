@@ -4,25 +4,6 @@
     </div>
 </template>
 
-
-<script>
-
-
-export default {
-    components: {},
-
-    data() {
-        return {
-            films: null
-        }
-    },
-    methods: {
-
-    },
-    mounted() {
-    }
-}
-</script>
   
 <style lang="scss" scoped>
 @import "../../assets/scss/variables.scss";

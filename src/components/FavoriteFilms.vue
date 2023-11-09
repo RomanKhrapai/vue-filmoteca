@@ -1,32 +1,22 @@
 <template>
     <div>
-
         <GridFilms v-if="favoriteFilms" :films="favoriteFilms" />
         <NoFilms v-if="favoriteFilms.length === 0 && !isLoading" />
-
     </div>
 </template>
 
-
-<script>
+<script setup>
 import GridFilms from "./GridFilms.vue"
 import NoFilms from "./NoFilms.vue"
 import { useAuthStore } from "../store/authStore"
-import { useFilmStore } from "../store/film/filmStore"
-import { mapState, mapActions } from "pinia"
+import { useFilmStore } from "../store/filmStore"
+import { storeToRefs } from "pinia"
 
-export default {
-    components: { GridFilms, NoFilms },
-    methods: { ...mapActions(useFilmStore, ['falseLoading']) },
+const { falseLoading } = useFilmStore()
+const { favoriteFilms } = storeToRefs(useAuthStore())
+const { isLoading } = storeToRefs(useFilmStore())
 
-    computed: {
-        ...mapState(useAuthStore, ['favoriteFilms']),
-        ...mapState(useFilmStore, ['isLoading'])
-    },
-    mounted() {
-        this.falseLoading();
-    }
-}
+onMounted(() => falseLoading())
 </script>
   
 <style scoped></style>

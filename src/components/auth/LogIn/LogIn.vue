@@ -13,7 +13,7 @@
     </AuthContainer>
 </template>
   
-<script>
+<script setup>
 import CustomForm from "../../shared/form/CustomForm.vue";
 import AuthContainer from "../AuthContainer.vue"
 import CustomInput from "../../shared/form/CustomInput/CustomInput.vue";
@@ -23,63 +23,30 @@ import {
 } from "../../../utils/validationRules";
 import MainTitle from "../../shared/MainTitle.vue";
 import { useAuthStore } from "../../../store/authStore"
-import { mapActions, mapState } from "pinia"
+import { storeToRefs } from "pinia"
+import { ref, computed, watch } from "vue"
 
-export default {
-    name: "LogInApp",
-    components: {
-        CustomForm,
-        CustomInput,
-        SubmitButton,
-        AuthContainer,
-        MainTitle,
-    },
-    data() {
-        return {
-            email: "",
-            password: "",
-            agreeToRules: false,
-        };
-    },
-    computed: {
-        ...mapState(useAuthStore, ['isAuthorized']),
-        rules() {
-            return {
-                emailValidation,
-                passwordValidation,
-                isRequired,
-            };
-        },
 
-        emailRules() {
-            return [this.rules.isRequired, this.rules.emailValidation];
-        },
+const email = ref("")
+const password = ref("")
+const form = ref(null)
+const { isAuthorized } = storeToRefs(useAuthStore())
+const { loginUser } = useAuthStore()
 
-        passwordRules() {
-            return [this.rules.isRequired, this.rules.passwordValidation];
-        },
-    },
-    methods: {
-        ...mapActions(useAuthStore, ["loginUser"]),
+const emailRules = computed(() => [isRequired, emailValidation])
 
-        handleSubmit() {
-            const { form } = this.$refs;
-            const isFormValid = form.validate();
-            if (isFormValid) {
-                this.loginUser({ email: this.email, password: this.password });
-                form.reset()
-            }
-        },
-    },
-    watch: {
-        isAuthorized() {
-            if (this.isAuthorized) {
-                this.$router.push({ name: 'home' }
-                )
-            }
-        }
+const passwordRules = computed(() => [isRequired, passwordValidation]);
+
+function handleSubmit() {
+
+    const isFormValid = form.value.validate()
+    if (isFormValid) {
+        loginUser({ email: email.value, password: password.value });
+        form.value.reset()
     }
-};
+}
+watch(isAuthorized, () => { if (isAuthorized) { router.push({ name: 'home' }) })
+
 </script>
   
 <style lang="scss" scoped>

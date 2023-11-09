@@ -1,3 +1,51 @@
+<script setup>
+import { useReviewsStore } from "../store/reviewsStore"
+import { useAuthStore } from "../store/authStore"
+import { ref } from 'vue'
+import { computed, onMounted, watch } from "vue"
+import { storeToRefs } from "pinia";
+
+const isDialogStar = ref(false);
+const rating = ref(0);
+const { saveRating, getReviews } = useReviewsStore();
+const { readRating } = storeToRefs(useReviewsStore());
+const { addFilmToLibrary, } = useAuthStore();
+const { isAuthorized, plannedFilms, favoriteFilms } = storeToRefs(useAuthStore());
+
+const { id, film } = defineProps({
+    id: String,
+    film: {
+        type: Object,
+        default: null,
+    },
+});
+
+function clickSaverating(rating) {
+    saveRating(id, rating)
+    isDialogStar.value = false
+};
+
+function activeColor(val) {
+    return val ? 'yellow-darken-3' : 'nome'
+}
+const isPlanned = computed(() => plannedFilms.value.some(film => +film.id === +id))
+const isFavorite = computed(() => favoriteFilms.value.some(film => +film.id === +id))
+const likeText = computed(() => rating.value ? `Оцінено на ${rating.value}` : "Оцінити");
+const favorite = computed(() => isFavorite.value ? `В улюблених` : "Додати в улюблені");
+const planned = computed(() => isPlanned.value ? `В запланованих` : "Додати в заплановані");
+
+onMounted(() => {
+    rating.value = readRating.value;
+    if (isAuthorized.value) {
+        getReviews(id)
+    }
+});
+
+watch(readRating, () => { rating.value = readRating.value })
+watch(isAuthorized, (newVal) => { getReviews(id) })
+</script>
+
+
 <template>
     <div class="panel">
         <v-btn icon size="large" @click="addFilmToLibrary(film, false)" v-tooltip="planned">
@@ -9,10 +57,7 @@
         <v-btn icon size="large" @click="isDialogStar = true" v-tooltip="likeText">
             <v-icon :color="activeColor(rating)">mdi-star</v-icon>
         </v-btn>
-        <div v-if="false">
 
-
-        </div>
         <v-dialog v-model="isDialogStar" width="auto" :scrim="false">
             <v-card>
                 <v-card-text>
@@ -28,83 +73,6 @@
         </v-dialog>
     </div>
 </template>
-<script>
-import { useReviewsStore } from "../store/reviewsStore"
-import { useAuthStore } from "../store/authStore"
-import { mapActions, mapState } from "pinia"
-
-export default {
-    props: ['id', 'film'],
-    data() {
-        return {
-            isDialogStar: false,
-            rating: null,
-        }
-    },
-    methods: {
-        ...mapActions(useReviewsStore, ["saveRating", "getReviews"]),
-        ...mapActions(useAuthStore, ["addFilmToLibrary"]),
-
-        clickSaverating(rating) {
-            this.saveRating(this.id, rating)
-            this.isDialogStar = false
-        },
-
-        activeColor(val) {
-            return val ? 'yellow-darken-3' : 'nome'
-        }
-    },
-    computed: {
-        ...mapState(useReviewsStore, ['readRating',]),
-        ...mapState(useAuthStore, ['isAuthorized', 'plannedFilms', 'favoriteFilms']),
-
-        isPlanned() {
-
-            return this.plannedFilms.some(film => +film.id === +this.id)
-        },
-
-        isFavorite() {
-            return this.favoriteFilms.some(film => +film.id === +this.id)
-        },
-        likeText() {
-            if (this.rating) {
-                return `Оцінено на ${this.rating}`
-            }
-            return "Оцінити"
-        },
-        favorite() {
-            if (this.isFavorite) {
-                return `В улюблених`
-            }
-            return "Додати в улюблені"
-        },
-        planned() {
-            if (this.isPlanned) {
-                return `В запланованих`
-            }
-            return "Додати в заплановані"
-        }
-    },
-    mounted() {
-        this.rating = this.readRating
-    },
-    watch: {
-        readRating() {
-            this.rating = this.readRating
-        },
-        page() {
-            this.$router.push({
-                query: { ...this.$router.query, page: this.page }
-            })
-        },
-        isAuthorized(newVal) {
-
-            this.getReviews(this.id)
-
-        }
-    }
-}
-</script>
 
 <style scoped>
 .panel {

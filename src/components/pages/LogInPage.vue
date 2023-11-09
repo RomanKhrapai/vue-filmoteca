@@ -4,25 +4,16 @@
     </AuthSection>
 </template>
 
-<script>
+<script setup>
 import LogInForm from "../auth/LogIn/LogIn.vue";
 import AuthSection from "../auth/AuthSection.vue";
-import { useFilmStore } from "../../store/film/filmStore"
-import { mapActions, } from "pinia"
+import { useFilmStore } from "../../store/filmStore"
+import { onMounted } from "vue"
 
-export default {
-    name: 'LogInPage',
-    components: {
-        LogInForm,
-        AuthSection,
-    },
-    methods: {
-        ...mapActions(useFilmStore, ['falseLoading']),
-    },
-    mounted() {
-        this.falseLoading();
-    }
-}
+const { falseLoading } = useFilmStore();
+
+onMounted(() => falseLoading())
+
 </script>
 
 <style lang="scss" scoped></style>

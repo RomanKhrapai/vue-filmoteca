@@ -19,29 +19,20 @@
 
     </v-card>
 </template>
-<script>
-import { useAuthStore } from '../store/authStore';
-import { mapActions } from 'pinia';
+<script setup>
 import StarsRating from './shared/StarsRating.vue'
 
-export default {
-    components: { StarsRating },
+const { dataFilm } = defineProps(["dataFilm"])
 
-    props: ["dataFilm"],
-
-    methods: {
-        ...mapActions(useAuthStore, ['delfilm']),
-        getGenres() {
-            const genres = this.dataFilm.genres
-            if (!genres) {
-                return
-            }
-            if (genres.length > 2) {
-                return genres.splice(2).join(", ");
-            }
-            return genres.join(", ");
-        }
+function getGenres() {
+    const genres = dataFilm.genres
+    if (!genres) {
+        return
     }
+    if (genres.length > 2) {
+        return genres.splice(2).join(", ");
+    }
+    return genres.join(", ");
 }
 </script>
   

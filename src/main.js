@@ -13,7 +13,6 @@ import Toast from "vue-toastification";
 
 import router from "./router/index.js";
 import App from "./App.vue";
-import { globalMixinSearchValidation } from "./mixins/globalMixinSearchValidation";
 import { TOAST_OPTIONS } from "./constants";
 
 const vuetify = createVuetify({ components, directives });
@@ -23,7 +22,6 @@ const app = createApp(App);
 app.use(router)
     .use(pinia)
     .use(Toast, TOAST_OPTIONS)
-    .mixin(globalMixinSearchValidation)
     .directive("tooltip", (el, param) => {
         const span = document.createElement("span");
         span.classList.add("tooltiptext");

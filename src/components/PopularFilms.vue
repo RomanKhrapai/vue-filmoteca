@@ -11,46 +11,36 @@
 </template>
 
 
-<script>
-import axiosInstance from "../services/axios"
+<script setup>
 import FilterBox from "./shared/FilterBox.vue"
 import CustomSelect from "./shared/CustomSelect.vue"
 import GridFilms from "./GridFilms.vue"
-import { useFilmStore } from "../store/film/filmStore"
+import { useFilmStore } from "../store/filmStore"
 import { useGenreStore } from "../store/genresStore"
-import { mapActions, mapState } from "pinia"
+import { storeToRefs } from "pinia"
 import { debounce } from "../utils/debounce"
 import Pagination from "./Pagination.vue"
+import { ref, watch, onMounted } from 'vue'
 
-export default {
-    components: { GridFilms, FilterBox, CustomSelect, Pagination },
+const filmStore = useFilmStore();
+const genres = useGenreStore();
 
-    data() {
-        return {
-            selectedGanres: "All",
+const { page, films } = storeToRefs(filmStore);
+const { genreItems: ganresOption } = storeToRefs(genres)
 
-        }
-    },
-    methods: {
-        ...mapActions(useFilmStore, ["getpopularFilms"]),
-    },
-    computed: {
-        ...mapState(useFilmStore, ['page', 'films',]),
-        ...mapState(useGenreStore, { ganresOption: 'genreItems' })
+const selectedGanres = ref("All")
 
-    },
-    watch: {
-        selectedGanres() {
-            this.getpopularFilms(this.selectedGanres);
-        },
-        page() {
-            debounce(() => { this.getpopularFilms(this.selectedGanres); })
-        }
-    },
-    mounted() {
-        this.getpopularFilms(this.selectedGanres);
-    }
-}
+watch(selectedGanres, () => {
+    filmStore.getpopularFilms(selectedGanres.value);
+})
+watch(page, () => {
+    debounce(() => { filmStore.getpopularFilms(selectedGanres.value); })
+})
+
+onMounted(() => {
+    filmStore.getpopularFilms(selectedGanres.value);
+})
+
 </script>
   
 <style scoped></style>

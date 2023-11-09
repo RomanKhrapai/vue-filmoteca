@@ -7,25 +7,21 @@
 </template>
 
 
-<script>
+<script setup>
 import GridFilms from "./GridFilms.vue"
 import NoFilms from "./NoFilms.vue"
 import { useAuthStore } from "../store/authStore"
-import { useFilmStore } from "../store/film/filmStore"
-import { mapState, mapActions } from "pinia"
+import { useFilmStore } from "../store/filmStore"
+import { onMounted } from "vue"
+import { storeToRefs } from "pinia"
 
-export default {
-    components: { GridFilms, NoFilms },
-    methods: { ...mapActions(useFilmStore, ['falseLoading']) },
-    computed: {
-        ...mapState(useAuthStore, ['plannedFilms']),
-        ...mapState(useFilmStore, ['isLoading']),
-    },
-    mounted() {
-        this.falseLoading();
-    }
+const { plannedFilms } = storeToRefs(useAuthStore());
+const { falseLoading } = useFilmStore()
+const { isLoading } = storeToRefs(useFilmStore())
 
-}
+onMounted(() => {
+    falseLoading();
+})
 </script>
   
 <style scoped></style>

@@ -7,43 +7,30 @@
 
     </div>
 </template>
-<script>
-import { useFilmStore } from "../../store/film/filmStore"
-import { mapActions, mapState } from "pinia"
+<script setup>
+import { useFilmStore } from "../../store/filmStore"
 import GridFilms from "../GridFilms.vue"
 import Pagination from "../Pagination.vue"
 import NoFilms from "../NoFilms.vue"
 import { debounce } from "../../utils/debounce"
 
+import { watch, onMounted } from 'vue'
+import { storeToRefs } from "pinia"
 
-export default {
-    components: { GridFilms, Pagination, NoFilms },
+const { getFilms, getSearchFilms } = useFilmStore()
+const { page, search, isLoading, films } = storeToRefs(useFilmStore())
 
-    methods: {
-        ...mapActions(useFilmStore, ["getFilms", 'getSearchFilms']),
-        getNewsFilms() {
-            if (this.search) { this.getSearchFilms() }
-            else { this.getFilms() }
-        }
-
-    },
-    computed: {
-        ...mapState(useFilmStore, ['page', 'films', 'search', "isLoading"])
-    },
-
-    watch: {
-        page() {
-            debounce(() => { this.getNewsFilms() })
-        },
-        isLoading() {
-            this.getNewsFilms()
-        }
-    },
-
-    mounted() {
-        this.getNewsFilms()
-    }
+function getNewsFilms() {
+    if (search.value) { getSearchFilms() }
+    else { getFilms() }
 }
+onMounted(() => { getNewsFilms() })
+
+watch(page, () => { debounce(() => { getNewsFilms() }) })
+watch(isLoading, () => { getNewsFilms() })
+
+
+
 </script>
   
 <style scoped></style>

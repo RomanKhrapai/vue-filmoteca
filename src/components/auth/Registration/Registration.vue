@@ -21,7 +21,7 @@
     </AuthContainer>
 </template>
   
-<script>
+<script setup>
 import CustomForm from "../../shared/form/CustomForm.vue";
 import AuthContainer from "../AuthContainer.vue"
 import CustomInput from "../../shared/form/CustomInput/CustomInput.vue";
@@ -32,78 +32,40 @@ import {
 } from "../../../utils/validationRules";
 import MainTitle from "../../shared/MainTitle.vue";
 import { useAuthStore } from "../../../store/authStore"
-import { mapActions, mapState } from "pinia"
+import { storeToRefs } from "pinia"
+import { ref, computed, watch } from 'vue'
+import { useRouter } from 'vue-router'
 
-export default {
-    name: "RegistrationApp",
-    components: {
-        CustomForm,
-        CustomInput,
-        SubmitButton,
-        AuthContainer,
-        MainTitle,
-        CustomCheckBox
-    },
-    data() {
-        return {
-            name: "",
-            email: "",
-            password: "",
-            confirmPassword: "",
-            agreeToRules: false,
-        };
-    },
-    computed: {
-        ...mapState(useAuthStore, ['isAuthorized']),
-        rules() {
-            return {
-                emailValidation,
-                passwordValidation,
-                isRequired,
-                nameValidation,
+const router = useRouter()
 
-            };
-        },
-        nameRules() {
-            return [this.rules.isRequired, this.rules.nameValidation];
-        },
-        emailRules() {
-            return [this.rules.isRequired, this.rules.emailValidation];
-        },
+const name = ref("")
+const email = ref("")
+const password = ref("")
+const confirmPassword = ref("")
+const agreeToRules = ref(false)
 
-        passwordRules() {
-            return [this.rules.isRequired, this.rules.passwordValidation];
-        },
-        confirmPasswordRules() {
-            return [
-                (val) => {
-                    return val !== this.password ? "Паролі не збігаються" : null
-                },
-            ];
-        },
-        checkBoxRules() {
-            return [() => !this.agreeToRules ? "Згоду не підтверджено" : null];
-        }
-    },
-    methods: {
 
-        ...mapActions(useAuthStore, ["registerUser"]),
+const form = ref(null)
 
-        async handleSubmit() {
-            const { form } = this.$refs;
-            const isFormValid = form.validate();
-            if (isFormValid) {
-                this.registerUser({ name: this.name, email: this.email, password: this.password });
-                form.reset()
-            }
-        },
-    },
-    watch: {
-        isAuthorized() {
-            this.$router.push({ name: 'home' })
-        }
+
+const { registerUser } = useAuthStore()
+const { isAuthorized } = storeToRefs(useAuthStore())
+
+const nameRules = computed(() => [isRequired, nameValidation]);
+const emailRules = computed(() => [isRequired, emailValidation])
+const passwordRules = computed(() => [isRequired, passwordValidation])
+const confirmPasswordRules = computed(() => [(val) => val !== password.value ? "Паролі не збігаються" : null])
+const checkBoxRules = computed(() => [() => !agreeToRules.value ? "Згоду не підтверджено" : null])
+
+function handleSubmit() {
+    const isFormValid = form.value.validate()
+    if (isFormValid) {
+        registerUser({ name: name.value, email: email.value, password: password.value });
+        form.value.reset()
     }
-};
+}
+
+watch(isAuthorized, () => router.push({ name: 'home' })) 
 </script>
   
 <style lang="scss" scoped>

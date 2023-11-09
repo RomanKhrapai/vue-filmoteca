@@ -1,3 +1,86 @@
+<script setup>
+import Modal from './shared/Modal.vue';
+import { QuillEditor } from '@vueup/vue-quill'
+import { useReviewsStore } from '../store/reviewsStore';
+import { useAuthStore } from '../store/authStore';
+import { storeToRefs } from "pinia"
+import { useToast } from "vue-toastification";
+import { ref, computed } from 'vue';
+
+
+const { saveReview } = useReviewsStore();
+const { reviewsItems } = storeToRefs(useReviewsStore())
+const auth = useAuthStore();
+const toast = useToast();
+const { id } = defineProps({
+    id: Number,
+});
+const { isAuthorized, uid } = storeToRefs(auth)
+
+const isShowDialog = ref(false)
+const index = ref(null);
+const isShowMore = ref(false)
+const isShowModal = ref(false)
+const curentReview = ref(null)
+const content = ref("")
+const toolbar = [
+    ['bold', 'italic', 'underline', 'strike'],
+    [{ list: 'ordered' }, { list: 'bullet' }],
+    ['link'],
+    ['clean'],
+]
+
+function openDialog(id, max) {
+    if (reviewsItems[id].content.length > max) {
+        isShowDialog.value = true;
+        index.value = id;
+    }
+};
+function changeReview(i) {
+    isShowModal.value = true;
+    if (Number.isInteger(i)) {
+        curentReview.value = reviewsItems.value[i];
+        content.value = reviewsItems.value[i].content;
+    } else {
+        curentReview.value = null;
+        content.value = '';
+    }
+}
+function checkReview() {
+
+    if (content.value?.trim() === '') {
+        toast.warning("Поле вводу коментарів не може бути пустим!");
+        return
+    }
+    saveReview(content.value, id, curentReview.value?.id)
+    isShowModal.value = false
+}
+function isOwner(id) {
+    return isAuthorized.value && id === uid.value
+}
+function shotContent(text, max = 50) {
+    if (text.length > max) {
+        return text.substring(0, max) + "..."
+    }
+    return text;
+}
+
+const isLengthReviewsEnough = computed(() => {
+    if (reviewsItems?.length) {
+        return reviewsItems.length > 3
+    }
+    return false
+})
+const partOrFullReviews = computed(() => {
+    if (!isLengthReviewsEnough.value) {
+        isShowMore.value = false;
+    }
+    const arr = [...reviewsItems.value]
+    return isShowMore.value ? arr : arr.splice(0, 3);
+})
+
+</script>
+
 <template>
     <div v-if="reviewsItems || isAuthorized">
         <div class="reviews_header">
@@ -21,7 +104,7 @@
                                 v-tooltip="'Змінити'">
                                 <span class="mdi mdi-fountain-pen-tip reviews_btn-text"></span>
                             </v-btn>
-                            <v-btn v-if="isOwner(item?.uid)" variant="text" @click.stop="removeReview(item.id, id)"
+                            <v-btn v-if="isOwner(item?.uid)" variant="text" @click.stop="reviews.removeReview(item.id, id)"
                                 v-tooltip="'Видалити'">
                                 <span class="mdi mdi-trash-can-outline reviews_btn-text"></span>
                             </v-btn>
@@ -77,95 +160,7 @@
 </template>
 
 
-<script>
-import Modal from './shared/Modal.vue';
-import { QuillEditor } from '@vueup/vue-quill'
-import { useReviewsStore } from '../store/reviewsStore';
-import { useAuthStore } from '../store/authStore';
-import { mapState, mapActions } from 'pinia';
-import { useToast } from "vue-toastification";
-export default {
-    props: ['id'],
-    components: { Modal, QuillEditor },
-    data() {
-        return {
-            isShowDialog: false,
-            index: null,
-            isShowMore: false,
-            isShowModal: false,
-            curentReview: null,
-            content: "",
-            toolbar: [
-                [{ size: ['small', false, 'large'] }],
-                ['bold', 'italic', 'underline', 'strike'],
-                [{ list: 'ordered' }, { list: 'bullet' }],
-                ['link'],
-                ['clean'],
-            ]
 
-        }
-    },
-    methods: {
-        ...mapActions(useReviewsStore, ["removeReview", 'saveReview']),
-        openDialog(index, max) {
-            if (this.reviewsItems[index].content.length > max) {
-                this.isShowDialog = true;
-                this.index = index;
-            }
-        },
-        changeReview(i) {
-            this.isShowModal = true;
-            if (Number.isInteger(i)) {
-                this.curentReview = this.reviewsItems[i];
-                this.content = this.reviewsItems[i].content;
-            } else {
-                this.curentReview = null;
-                this.content = '';
-            }
-        },
-        checkReview() {
-            const toast = useToast();
-            if (this.content?.trim() === '') {
-                console.log("Поле вводу коментарів не може бути пустим!");
-                //  this.$toast.warning("Поле вводу коментарів не може бути пустим!");
-                toast.warning("Поле вводу коментарів не може бути пустим!");
-                return
-            }
-            this.saveReview(this.content, this.id, this.curentReview?.id)
-            this.isShowModal = false
-        },
-        shotContent(text, max = 50) {
-            if (text.length > max) {
-                return text.substring(0, max) + "..."
-            }
-            return text;
-        },
-        isOwner(uid) {
-            if (this.isAuthorized) { return uid === this.uid } return false
-
-        },
-
-    },
-    computed: {
-        ...mapState(useReviewsStore, ["reviewsItems"]),
-        ...mapState(useAuthStore, ["isAuthorized", "uid"]),
-        isLengthReviewsEnough() {
-            if (this.reviewsItems?.length) {
-                return this.reviewsItems.length > 3
-            }
-            return false
-        },
-        partOrFullReviews() {
-            if (!this.isLengthReviewsEnough) {
-                this.isShowMore = true;
-            }
-            const arr = [...this.reviewsItems]
-            return this.isShowMore ? this.reviewsItems : arr.splice(0, 3);
-        },
-
-    },
-}
-</script>
 
 <style>
 .reviews_btn-text {

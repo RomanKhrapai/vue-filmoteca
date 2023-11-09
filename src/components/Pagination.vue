@@ -1,5 +1,5 @@
 <template>
-    <div class="container" v-if="pages !== 1">
+    <div class="container" v-if="pages !== 1 && pages">
         <button v-tooltip="'Попередння сторінка'" @click="prevPage"><v-icon icon="mdi-chevron-left-circle-outline" color=""
                 size="50px"></v-icon></button>
         <input type="text" :value="page" @input="validation($event)">
@@ -9,33 +9,30 @@
                 size="50px"></v-icon></button>
     </div>
 </template>
-<script>
-import { useFilmStore } from '../store/film/filmStore'
-import { mapActions, mapState } from "pinia"
+<script setup>
+import { useFilmStore } from '../store/filmStore'
+import { storeToRefs } from "pinia"
+import { watch } from 'vue'
+import { useRouter } from 'vue-router'
 
-export default {
-    methods: {
-        ...mapActions(useFilmStore, ["nextPage", 'prevPage', 'setPage']),
+const router = useRouter();
+const { nextPage, prevPage, setPage } = useFilmStore();
+const { page, pages } = storeToRefs(useFilmStore())
 
-        validation(e) {
-            if (!Number.isFinite(+e.target.value)) {
-                e.target.value = this.page
-                return;
-            }
-            this.setPage(e.target.value)
-        },
-    },
-    computed: {
-        ...mapState(useFilmStore, ['page', "pages"])
-    },
-    watch: {
-        page() {
-            this.$router.push({
-                query: { ...this.$router.query, page: this.page }
-            })
-        }
+function validation(e) {
+    if (!Number.isFinite(+e.target.value)) {
+        e.target.value = page.value
+        return;
     }
+    setPage(e.target.value)
 }
+
+watch(page, () => {
+    router.push({
+        query: { ...router.query, page: page.value }
+    })
+})
+
 </script>
 
 <style scoped>

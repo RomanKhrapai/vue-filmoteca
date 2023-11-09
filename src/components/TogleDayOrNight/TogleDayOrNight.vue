@@ -9,14 +9,8 @@
     </div>
 </template>
   
-<script>
-
-export default {
-
-    props: { 'modelValue': Boolean },
-
-
-};
+<script setup>
+const props = defineProps({ 'modelValue': Boolean })
 </script>
   
 <style lang="scss" scoped>

@@ -13,24 +13,21 @@
     </div>
 </template>
   
-<script>
+<script setup>
 
-export default {
-    props: ['rating'],
-    methods: {
-        starShow(index) {
-            const num = Math.round(this.rating) - index * 2;
-            if (num < -1) {
-                return 'mdi-star-outline'
-            } else if (num === -1) {
-                return 'mdi-star-half-full'
-            } else {
-                return 'mdi-star'
-            }
-        }
+const props = defineProps(['rating'])
+
+function starShow(index) {
+    const num = Math.round(this.rating) - index * 2;
+    if (num < -1) {
+        return 'mdi-star-outline'
+    } else if (num === -1) {
+        return 'mdi-star-half-full'
+    } else {
+        return 'mdi-star'
     }
-
 }
+
 </script>
   
 <style lang="scss" scoped>

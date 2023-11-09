@@ -4,21 +4,16 @@
     </component>
 </template>
   
-<script>
-export default {
-    name: 'MainTitle',
-    props: {
-        level: {
-            type: Number,
-            default: 1,
-        },
+<script setup>
+import { computed } from "vue"
+
+const props = defineProps({
+    level: {
+        type: Number,
+        default: 1,
     },
-    computed: {
-        tagName() {
-            return `h${this.level}`;
-        },
-    },
-};
+})
+const tagName = computed(() => `h${this.level}`)
 </script>
   
 <style lang="scss" scoped>

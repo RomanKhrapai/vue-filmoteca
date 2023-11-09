@@ -18,6 +18,11 @@ export const ageValidation = (num) => {
     if (+num <= 5) return "повинне бути більше пяти";
     return null;
 };
+export const pageValidation = (num) => {
+    if (String(num).trim() === "") return "поле номеру сторінки пусте";
+    if (!Number.isFinite(+num)) return "сторінка має бути числом";
+    return null;
+};
 export const passwordValidation = (str) => {
     if (!str?.trim()) return "пароль не може бути пустим";
     if (str.length < 6) return "має бути більше 6 символів";

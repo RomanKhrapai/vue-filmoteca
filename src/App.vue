@@ -1,6 +1,48 @@
+<script setup>
+
+import TogleDayOrNight from "@/components/TogleDayOrNight";
+import UserMenu from "./components/auth/UserMenu.vue";
+import SearchForm from "./components/shared/form/SearchForm.vue";
+import Loader from "./components/Loader.vue";
+import { useAuthStore } from "./store/authStore"
+import { storeToRefs } from "pinia"
+import { useFilmStore } from "./store/filmStore";
+import { ref, watch } from "vue";
+import { useRouter, useRoute } from 'vue-router';
+import { useGenreStore } from "./store/genresStore";
+
+const auth = useAuthStore();
+const film = useFilmStore();
+const genres = useGenreStore();
+const router = useRouter();
+const route = useRoute();
+
+const isNightMode = ref(false)
+const tab = ref(null)
+
+const { isAuthorized, path } = storeToRefs(auth)
+const { isLoading } = storeToRefs(film)
+
+watch(() => route.meta.id, (id) => {
+  tab.value = id;
+});
+
+watch(isAuthorized, (newVal) => {
+  if (newVal === true && path.value) {
+    router.push({ path: path.value });
+    auth.clearPath();
+  }
+})
+
+genres.getgenres();
+auth.onAuth();
+</script>
+
+
 
 <template>
-  <div class="container-app" :style="{ backgroundColor: isNightMode ? '#fff' : '#000000e0' }">
+  <div class="container-app"
+    :style="{ backgroundColor: isNightMode ? '#fff' : '#000000e0', color: !isNightMode ? '#aaa' : '#000000e0' }">
     <div class="bg-header" :class="[!isNightMode ? 'bg-header-dark' : 'bg-header-white']">
       <div class="container heder-nav">
         <v-tabs v-model="tab" color="deep-purple-accent-4" align-tabs="start">
@@ -39,52 +81,6 @@
     <TogleDayOrNight v-model="isNightMode" />
   </div>
 </template>
-<script>
-
-import TogleDayOrNight from "@/components/TogleDayOrNight";
-import UserMenu from "./components/auth/UserMenu.vue";
-import SearchForm from "./components/shared/form/SearchForm.vue";
-import Loader from "./components/Loader.vue";
-import { useAuthStore } from "./store/authStore"
-import { mapState, mapActions } from "pinia"
-import { mixinStart } from "./mixins/mixinStart";
-import { useFilmStore } from "./store/film/filmStore";
-
-
-export default {
-
-  components: { TogleDayOrNight, UserMenu, SearchForm, Loader },
-  mixins: [mixinStart],
-  data() {
-    return {
-      isNightMode: false,
-      tab: null,
-
-    }
-  },
-  methods: {
-    ...mapActions(useAuthStore, ['clearPath'])
-  },
-  computed: {
-    ...mapState(useAuthStore, ['isAuthorized', 'path']),
-    ...mapState(useFilmStore, ['isLoading']),
-  },
-  watch: {
-    '$route.meta.id'(id) {
-      this.tab = id
-    },
-    isAuthorized(newVal) {
-      if (newVal === true && this.path) {
-        this.$router.push({ path: this.path });
-        this.clearPath();
-      }
-    }
-  },
-
-
-
-}
-</script>
 
 <style scoped>
 .container {

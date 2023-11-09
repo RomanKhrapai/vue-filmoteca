@@ -12,31 +12,15 @@
 </template>
 
 
-<script>
-import { useAuthStore } from "../../store/authStore";
-import { useFilmStore } from "../../store/film/filmStore"
-import { mapActions, } from "pinia"
-export default {
+<script setup>
+import { useRouter, } from "vue-router"
 
-    data() {
-        return {
-
-        }
-    },
-    methods: {
-        ...mapActions(useFilmStore, ['falseLoading']),
-        ...mapActions(useAuthStore, ['getLibrari']),
-
-        redirectTo(path) {
-            this.$router.push({
-                path,
-            })
-        },
-    },
-    mounted() {
-        this.falseLoading();
-    }
+const router = useRouter();
+function redirectTo(path) {
+    router.push({
+        path,
+    })
 }
+
 </script>
   
-<style scoped></style>
