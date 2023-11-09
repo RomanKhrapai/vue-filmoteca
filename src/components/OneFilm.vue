@@ -6,7 +6,7 @@ import ActivPanel from './ActivPanel.vue';
 import { useFilmStore } from "../store/filmStore";
 import { useAuthStore } from '../store/authStore';
 import { useReviewsStore } from '../store/reviewsStore';
-import useComputed from '../mixins/useComputed';
+import useComputed from '../utils/useComputed';
 import { ref, defineProps } from 'vue'
 import { storeToRefs } from 'pinia';
 
