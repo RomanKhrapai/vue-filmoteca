@@ -45,7 +45,7 @@ function handleSubmit() {
         form.value.reset()
     }
 }
-watch(isAuthorized, () => { if (isAuthorized) { router.push({ name: 'home' }) })
+watch(isAuthorized, () => { if (isAuthorized) { router.push({ name: 'home' }) } })
 
 </script>
   
