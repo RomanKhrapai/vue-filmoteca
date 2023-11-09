@@ -2,7 +2,8 @@
     <div class="box-content">
         <v-card class="mx-auto my-12">
             <div class="box">
-                <v-img :src="'/src/assets/images/camera.jpg'"></v-img>
+                <img src="/src/assets/images/camera.jpg" alt="Фільм відсутній">
+                <!-- <v-img :src="'/src/assets/images/camera.jpg'"></v-img> -->
                 <!-- <v-img :src="require('@/assets/images/camera.jpg')"></v-img> -->
                 <!-- require('@/assets/images/logo.svg') -->
             </div>
