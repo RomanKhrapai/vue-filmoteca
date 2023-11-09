@@ -25,7 +25,9 @@ import MainTitle from "../../shared/MainTitle.vue";
 import { useAuthStore } from "../../../store/authStore"
 import { storeToRefs } from "pinia"
 import { ref, computed, watch } from "vue"
+import { useRouter } from "vue-router";
 
+const router = useRouter()
 
 const email = ref("")
 const password = ref("")

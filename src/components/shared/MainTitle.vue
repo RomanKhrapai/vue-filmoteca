@@ -5,7 +5,7 @@
 </template>
   
 <script setup>
-import { computed } from "vue"
+import { computed, defineProps } from "vue"
 
 const props = defineProps({
     level: {
@@ -13,7 +13,7 @@ const props = defineProps({
         default: 1,
     },
 })
-const tagName = computed(() => `h${this.level}`)
+const tagName = computed(() => `h${props.level}`)
 </script>
   
 <style lang="scss" scoped>

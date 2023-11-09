@@ -77,7 +77,7 @@ const router = createRouter({
     routes,
 });
 
-function query(store) {
+function query(store, to, from) {
     if (to.path === from.path || !from.meta?.id) {
         const search = to.query?.search;
         store.setSearch(search ? search : null);
@@ -96,6 +96,7 @@ router.beforeEach((to, from, next) => {
     const authStatus = to.matched.find((record) => record.meta.auth)?.meta
         ?.auth;
     if (!authStatus) {
+        query(store, to, from);
         next();
     } else if (
         !auth.isAuthorized &&
@@ -104,10 +105,10 @@ router.beforeEach((to, from, next) => {
         auth.setPath(to.path);
         next({ name: "home" });
     } else if (!auth.isAuthorized && authStatus === "guest") {
-        query(store);
+        query(store, to, from);
         next();
     } else if (auth.isAuthorized && authStatus === "user") {
-        query(store);
+        query(store, to, from);
         next();
     } else next({ name: "NotFound" });
 });

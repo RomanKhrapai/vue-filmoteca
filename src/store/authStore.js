@@ -116,17 +116,16 @@ export const useAuthStore = defineStore("auth", () => {
             auth.value.isLoading = false;
         } catch (error) {
             const errorCode = error.code;
-            console.log(errorCode);
             let atherError = true;
             switch (errorCode) {
-                case " auth/invalid-login-credentials":
+                case "auth/invalid-login-credentials":
                     toast.error("Пароль або пошта не вірний!");
                     atherError = false;
                     break;
 
                 default:
-                    if (!atherError) {
-                        toast.error("Помилка реєстрації!");
+                    if (atherError) {
+                        toast.error("Помилка авторизації!");
                     }
                     break;
             }
@@ -173,7 +172,7 @@ export const useAuthStore = defineStore("auth", () => {
                     break;
 
                 default:
-                    if (!atherError) {
+                    if (atherError) {
                         toast.error("Помилка реєстрації!");
                     }
                     break;
