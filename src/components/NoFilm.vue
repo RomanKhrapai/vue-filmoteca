@@ -2,7 +2,9 @@
     <div class="box-content">
         <v-card class="mx-auto my-12">
             <div class="box">
-                <v-img :src="'/assets/images/camera.jpg'"></v-img>
+                <v-img :src="'/src/assets/images/camera.jpg'"></v-img>
+                <!-- <v-img :src="require('@/assets/images/camera.jpg')"></v-img> -->
+                <!-- require('@/assets/images/logo.svg') -->
             </div>
             <h2>
                 ФІЛЬМ НЕ ЗНАЙДЕНО
