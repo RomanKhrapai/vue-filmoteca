@@ -46,7 +46,7 @@ onBeforeMount(() => {
     "(prefers-color-scheme: dark)"
   ).matches;
 
-  isNightMode.value = isNight === null ? !hasDarkPreference : isNight
+  isNightMode.value = isNight === null ? !hasDarkPreference : !!isNight
 })
 
 genres.getgenres();

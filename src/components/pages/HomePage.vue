@@ -2,7 +2,7 @@
     <div>
 
         <GridFilms v-if="films" :films="films" />
-        <NoFilms v-if="films.length === 0 && !isLoading" />
+        <NoFilms class="full-box" v-if="films.length === 0 && !isLoading" />
         <Pagination />
 
     </div>
@@ -33,5 +33,7 @@ watch(isLoading, () => { getNewsFilms() })
 
 </script>
   
-<style scoped></style>
+<style scoped>
+.full-box {}
+</style>
   

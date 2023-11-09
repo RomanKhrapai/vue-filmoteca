@@ -38,7 +38,7 @@ getReviews(id);
     <div class="">
 
         <v-card v-if="oneFilm" class="mx-auto my-12">
-            <div v-if="oneFilm">
+            <div>
                 <div class="film_box" :style="{ 'background-image': 'url(' + oneFilm.backdropUrl + ') ' }">
                     <div class="film_box-background">
 
@@ -117,7 +117,7 @@ getReviews(id);
                 </Modal>
             </div>
         </v-card>
-        <NoFilm v-if="!oneFilm" />
+        <NoFilm v-if="!oneFilm && !isLoading" />
     </div>
 </template>
 
