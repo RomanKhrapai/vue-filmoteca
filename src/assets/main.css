@@ -26,14 +26,6 @@ body{
   transform: translate( 50%,-70%);
   z-index: 1;
 }
-/* .tooltip .tooltiptext-top{
-  top: 0%;
-  left:0%;
-  transform: translate( 50%,-70%);
-}
-
-  .tooltip .tooltiptext-bottom{ bottom: 20%;
-    left: 20%;} */
 
 .tooltip .tooltiptext::after {
   content: '';

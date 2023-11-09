@@ -28,33 +28,34 @@ app.use(router)
         span.classList.add("tooltiptext-top");
         span.innerHTML = param.value;
         el.style.position = "relative";
-        setTimeout(() => {
-            el.addEventListener(
-                "mouseover",
-                (e) => {
-                    let x = e.pageX,
-                        y = e.pageY;
-                    span.style.top =
-                        y -
-                        el.getBoundingClientRect().top -
-                        20 -
-                        window.scrollY +
-                        "px";
-                    span.style.left =
-                        x -
-                        el.getBoundingClientRect().left -
-                        70 -
-                        window.scrollX +
-                        "px";
-                },
-                {
-                    capture: true,
-                }
-            );
-            el.classList.add("tooltip");
 
-            el.appendChild(span);
-        }, 900);
+        el.addEventListener(
+            "mouseover",
+            (e) => {
+                let x = e.pageX,
+                    y = e.pageY;
+                span.style.top =
+                    y -
+                    el.getBoundingClientRect().top -
+                    20 -
+                    window.scrollY +
+                    "px";
+                span.style.left =
+                    x -
+                    el.getBoundingClientRect().left -
+                    70 -
+                    window.scrollX +
+                    "px";
+            },
+            {
+                capture: true,
+            }
+        );
+        el.classList.add("tooltip");
+        if (el.querySelector(".tooltiptext")) {
+            return;
+        }
+        el.appendChild(span);
     })
     .use(vuetify, {
         iconfont: "mdi",
