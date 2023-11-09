@@ -78,8 +78,13 @@ const router = createRouter({
 });
 
 function query(store, to, from) {
-    if (to.path === from.path || !from.meta?.id) {
+    if (
+        to.path === from.path ||
+        !from.meta?.id ||
+        to.fullPath.includes("/?search")
+    ) {
         const search = to.query?.search;
+        console.log(333);
         store.setSearch(search ? search : null);
         store.setPage(to.query?.page ? to.query.page : 1);
     } else {
