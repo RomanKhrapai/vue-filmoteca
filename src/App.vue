@@ -7,7 +7,7 @@ import Loader from "./components/Loader.vue";
 import { useAuthStore } from "./store/authStore"
 import { storeToRefs } from "pinia"
 import { useFilmStore } from "./store/filmStore";
-import { ref, watch } from "vue";
+import { ref, watch, onBeforeMount } from "vue";
 import { useRouter, useRoute } from 'vue-router';
 import { useGenreStore } from "./store/genresStore";
 
@@ -19,6 +19,8 @@ const route = useRoute();
 
 const isNightMode = ref(false)
 const tab = ref(null)
+
+
 
 const { isAuthorized, path } = storeToRefs(auth)
 const { isLoading } = storeToRefs(film)
@@ -32,6 +34,19 @@ watch(isAuthorized, (newVal) => {
     router.push({ path: path.value });
     auth.clearPath();
   }
+})
+watch(isNightMode, (val) => {
+  localStorage.setItem("isNight", val);
+})
+
+onBeforeMount(() => {
+  const isNight = localStorage.getItem("isNight")
+
+  const hasDarkPreference = window.matchMedia(
+    "(prefers-color-scheme: dark)"
+  ).matches;
+
+  isNightMode.value = isNight === null ? !hasDarkPreference : isNight
 })
 
 genres.getgenres();
