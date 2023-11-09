@@ -84,7 +84,7 @@ function query(store, to, from) {
         to.fullPath.includes("/?search")
     ) {
         const search = to.query?.search;
-        console.log(333);
+
         store.setSearch(search ? search : null);
         store.setPage(to.query?.page ? to.query.page : 1);
     } else {
@@ -97,9 +97,14 @@ router.beforeEach((to, from, next) => {
     const store = useFilmStore();
     store.startFetch();
 
+    if (to.path !== from.path) {
+        store.clearStore();
+    }
+
     const auth = useAuthStore();
     const authStatus = to.matched.find((record) => record.meta.auth)?.meta
         ?.auth;
+
     if (!authStatus) {
         query(store, to, from);
         next();

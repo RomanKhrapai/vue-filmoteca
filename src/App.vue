@@ -20,8 +20,6 @@ const route = useRoute();
 const isNightMode = ref(null)
 const tab = ref(null)
 
-
-
 const { isAuthorized, path } = storeToRefs(auth)
 const { isLoading } = storeToRefs(film)
 

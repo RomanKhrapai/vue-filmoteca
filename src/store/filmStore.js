@@ -237,6 +237,11 @@ export const useFilmStore = defineStore("film", () => {
         film.value.isError = false;
         film.value.isLoading = true;
     }
+    function clearStore() {
+        film.value.film = null;
+        film.value.filmsState = [];
+        film.value.totalPages = 1;
+    }
     return {
         film,
         films,
@@ -258,5 +263,6 @@ export const useFilmStore = defineStore("film", () => {
         setPage,
         setSearch,
         startFetch,
+        clearStore,
     };
 });
