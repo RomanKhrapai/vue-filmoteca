@@ -89,7 +89,6 @@ function query(store) {
 }
 
 router.beforeEach((to, from, next) => {
-    console.log(to);
     const store = useFilmStore();
     store.startFetch();
 

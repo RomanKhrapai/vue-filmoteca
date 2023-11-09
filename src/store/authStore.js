@@ -82,7 +82,6 @@ export const useAuthStore = defineStore("auth", () => {
     }
 
     async function addFilmToLibrary(data, isWatched) {
-        console.log(data);
         try {
             if (
                 auth.value.user.library.find(
@@ -148,7 +147,6 @@ export const useAuthStore = defineStore("auth", () => {
     }
     async function registerUser(payload) {
         auth.value.isLoading = true;
-        console.log(payload);
         const { email, password, name } = payload;
         try {
             await createUserWithEmailAndPassword(authFB, email, password);

@@ -179,7 +179,7 @@ export const useFilmStore = defineStore("film", () => {
                 film.value.videos = res.data.results;
             })
             .catch((error) => {
-                console.log(error);
+                toast.error("помилка отримання відео!");
                 film.value.isLoading = false;
             });
     }

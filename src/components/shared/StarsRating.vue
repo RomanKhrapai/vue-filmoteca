@@ -18,7 +18,7 @@
 const props = defineProps(['rating'])
 
 function starShow(index) {
-    const num = Math.round(this.rating) - index * 2;
+    const num = Math.round(props.rating) - index * 2;
     if (num < -1) {
         return 'mdi-star-outline'
     } else if (num === -1) {

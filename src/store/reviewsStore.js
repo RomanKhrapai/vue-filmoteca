@@ -72,7 +72,6 @@ export const useReviewsStore = defineStore("reviews", () => {
                     review
                 );
             } else {
-                console.log(idDoc);
                 const washingtonRef = doc(
                     db,
                     `/films/reviews/film_${id}`,
