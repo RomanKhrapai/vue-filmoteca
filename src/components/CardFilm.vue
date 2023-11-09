@@ -23,7 +23,9 @@
 </template>
 <script setup>
 import StarsRating from './shared/StarsRating.vue'
+import { useAuthStore } from '../store/authStore';
 
+const { delfilm } = useAuthStore();
 const { dataFilm } = defineProps(["dataFilm"])
 
 function getGenres() {

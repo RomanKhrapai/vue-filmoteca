@@ -11,6 +11,7 @@ import NoFilms from "./NoFilms.vue"
 import { useAuthStore } from "../store/authStore"
 import { useFilmStore } from "../store/filmStore"
 import { storeToRefs } from "pinia"
+import { onMounted } from 'vue'
 
 const { falseLoading } = useFilmStore()
 const { favoriteFilms } = storeToRefs(useAuthStore())

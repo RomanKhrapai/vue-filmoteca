@@ -66,6 +66,7 @@ export const useAuthStore = defineStore("auth", () => {
     }
     async function delfilm(idDoc) {
         await deleteDoc(doc(db, `users/user/${uid}`, idDoc));
+        toast.success("Видалено з бібліотеки");
         getLibrari();
     }
 
@@ -95,6 +96,9 @@ export const useAuthStore = defineStore("auth", () => {
             film.genres = film.genres.split(", ");
             film.isWatched = isWatched;
             await addDoc(collection(db, `users/user/${uid}`), film);
+            toast.success(
+                `додано до  ${!isWatched ? "запланованих" : "улюблених"}`
+            );
             getLibrari();
         } catch (e) {
             console.error("Error adding document: ", e);

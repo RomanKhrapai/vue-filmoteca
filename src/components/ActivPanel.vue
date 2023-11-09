@@ -12,6 +12,7 @@ const { readRating } = storeToRefs(useReviewsStore());
 const { addFilmToLibrary, } = useAuthStore();
 const { isAuthorized, plannedFilms, favoriteFilms } = storeToRefs(useAuthStore());
 
+
 const { id, film } = defineProps({
     id: String,
     film: {
@@ -26,6 +27,7 @@ function clickSaverating(rating) {
 };
 
 function activeColor(val) {
+
     return val ? 'yellow-darken-3' : 'nome'
 }
 const isPlanned = computed(() => plannedFilms.value.some(film => +film.id === +id))

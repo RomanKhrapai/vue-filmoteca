@@ -17,9 +17,11 @@ import axiosInstance from "../services/axios";
 import { formatDate } from "../utils/date";
 import { textToHtml } from "../utils/textToHtml";
 import { useAuthStore } from "./authStore";
+import { useToast } from "vue-toastification";
+
+const toast = useToast();
 
 const authStore = useAuthStore();
-const { uid } = useAuthStore();
 
 export const useReviewsStore = defineStore("reviews", () => {
     const reviews = ref({ rating: 0, reviews: [] });
@@ -157,6 +159,8 @@ export const useReviewsStore = defineStore("reviews", () => {
                 authStore.uid
             );
             await setDoc(washingtonRef, { [id]: value }, { merge: true });
+
+            toast.success("Оцінено");
 
             getReviews(id);
         } catch (e) {
