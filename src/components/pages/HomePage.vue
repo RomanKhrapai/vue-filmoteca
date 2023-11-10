@@ -26,8 +26,7 @@ function getNewsFilms() {
 }
 onMounted(() => { getNewsFilms() })
 
-watch(page, () => { debounce(() => { getNewsFilms() }) })
+watch(page, () => debounce(() => getNewsFilms()))
 watch(isLoading, () => { getNewsFilms() })
-
 </script>
   

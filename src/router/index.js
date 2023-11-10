@@ -91,12 +91,11 @@ function query(store, to, from) {
         store.setPage(1);
         store.setSearch(null);
     }
+    setTimeout(store.startFetch, 1);
 }
 
 router.beforeEach((to, from, next) => {
     const store = useFilmStore();
-    store.startFetch();
-
     if (to.path !== from.path) {
         store.clearStore();
     }
