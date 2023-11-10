@@ -160,7 +160,7 @@ export const useReviewsStore = defineStore("reviews", () => {
             );
             await setDoc(washingtonRef, { [id]: value }, { merge: true });
 
-            toast.success("Оцінено");
+            toast.success(+value ? "Оцінено" : "Оцінку видалено");
 
             getReviews(id);
         } catch (e) {

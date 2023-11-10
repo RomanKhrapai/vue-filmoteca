@@ -9,7 +9,7 @@ const isDialogStar = ref(false);
 const rating = ref(0);
 const { saveRating, getReviews } = useReviewsStore();
 const { readRating } = storeToRefs(useReviewsStore());
-const { addFilmToLibrary, } = useAuthStore();
+const { addFilmToLibrary, delfilm } = useAuthStore();
 const { isAuthorized, plannedFilms, favoriteFilms } = storeToRefs(useAuthStore());
 
 
@@ -27,14 +27,30 @@ function clickSaverating(rating) {
 };
 
 function activeColor(val) {
-
     return val ? 'yellow-darken-3' : 'nome'
 }
+function turnPlanned() {
+    if (isPlanned.value && uidPlanned.value) {
+        delfilm(uidPlanned.value)
+    } else {
+        addFilmToLibrary(film, false)
+    }
+}
+function turnFavorite() {
+    if (isFavorite.value && uidFavorite.value) {
+        delfilm(uidFavorite.value);
+    } else {
+        addFilmToLibrary(film, true)
+    }
+}
+
 const isPlanned = computed(() => plannedFilms.value.some(film => +film.id === +id))
 const isFavorite = computed(() => favoriteFilms.value.some(film => +film.id === +id))
+const uidPlanned = computed(() => plannedFilms.value.find(film => +film.id === +id).idDoc)
+const uidFavorite = computed(() => favoriteFilms.value.find(film => +film.id === +id).idDoc)
 const likeText = computed(() => rating.value ? `Оцінено на ${rating.value}` : "Оцінити");
-const favorite = computed(() => isFavorite.value ? `В улюблених` : "Додати в улюблені");
-const planned = computed(() => isPlanned.value ? `В запланованих` : "Додати в заплановані");
+const favorite = computed(() => isFavorite ? `В улюблених` : "Додати в улюблені");
+const planned = computed(() => isPlanned ? `В запланованих` : "Додати в заплановані");
 
 onMounted(() => {
     rating.value = readRating.value;
@@ -50,10 +66,10 @@ watch(isAuthorized, (newVal) => { getReviews(id) })
 
 <template>
     <div class="panel">
-        <v-btn icon size="large" @click="addFilmToLibrary(film, false)" v-tooltip="planned">
+        <v-btn icon size="large" @click="turnPlanned" v-tooltip="planned">
             <v-icon :color="activeColor(isPlanned)">mdi-bookmark-check-outline</v-icon>
         </v-btn>
-        <v-btn icon size="large" @click="addFilmToLibrary(film, true)" v-tooltip="favorite">
+        <v-btn icon size="large" @click="turnFavorite" v-tooltip="favorite">
             <v-icon :color="activeColor(isFavorite)">mdi-heart</v-icon>
         </v-btn>
         <v-btn icon size="large" @click="isDialogStar = true" v-tooltip="likeText">
