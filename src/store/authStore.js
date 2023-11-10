@@ -65,14 +65,14 @@ export const useAuthStore = defineStore("auth", () => {
         });
     }
     async function delfilm(idDoc) {
-        await deleteDoc(doc(db, `users/user/${uid}`, idDoc));
+        await deleteDoc(doc(db, `users/user/${uid.value}`, idDoc));
         toast.success("Видалено з бібліотеки");
         getLibrari();
     }
 
     async function getLibrari() {
         const querySnapshot = await getDocs(
-            collection(db, `users/user/${uid}`)
+            collection(db, `users/user/${uid.value}`)
         );
         auth.value.user.library = [];
         querySnapshot.forEach((doc) => {
@@ -95,7 +95,7 @@ export const useAuthStore = defineStore("auth", () => {
             const film = { ...data };
             film.genres = film.genres.split(", ");
             film.isWatched = isWatched;
-            await addDoc(collection(db, `users/user/${uid}`), film);
+            await addDoc(collection(db, `users/user/${uid.value}`), film);
             toast.success(
                 `додано до  ${!isWatched ? "запланованих" : "улюблених"}`
             );

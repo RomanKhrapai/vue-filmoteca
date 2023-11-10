@@ -20,7 +20,7 @@ const route = useRoute();
 const isNightMode = ref(null)
 const tab = ref(null)
 
-const { isAuthorized, path } = storeToRefs(auth)
+const { isAuthorized, path, uid } = storeToRefs(auth)
 const { isLoading } = storeToRefs(film)
 
 watch(() => route.meta.id, (id) => {
@@ -34,6 +34,7 @@ watch(isAuthorized, (newVal) => {
   }
 })
 watch(isNightMode, (val) => localStorage.setItem("isNight", val))
+watch(uid, auth.getLibrari)
 
 onBeforeMount(() => {
   const isNight = JSON.parse(localStorage.getItem("isNight"))
