@@ -31,7 +31,7 @@ const toolbar = [
 ]
 
 function openDialog(id, max) {
-    if (reviewsItems[id].content.length > max) {
+    if (reviewsItems.value[id].content.length > max) {
         isShowDialog.value = true;
         index.value = id;
     }
@@ -66,8 +66,8 @@ function shotContent(text, max = 50) {
 }
 
 const isLengthReviewsEnough = computed(() => {
-    if (reviewsItems?.length) {
-        return reviewsItems.length > 3
+    if (reviewsItems.value?.length) {
+        return reviewsItems.value.length > 3
     }
     return false
 })
